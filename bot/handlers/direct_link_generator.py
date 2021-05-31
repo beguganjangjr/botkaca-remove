@@ -11,7 +11,7 @@ import logging
 import json
 import re
 import urllib.parse
-import lk21
+#import lk21
 
 LOGGER = logging.getLogger(__name__)
 
@@ -43,8 +43,8 @@ def direct_link_generator(text_url: str):
         return github(text_url)
     elif 'racaty.net' in text_url:
         return racaty(text_url)
-    elif 'hxfile.co' in text_url:
-        return hxfile(text_url)    
+   # elif 'hxfile.co' in text_url:
+   #     return hxfile(text_url)    
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {text_url}')
 
@@ -155,15 +155,7 @@ def github(url: str) -> str:
     except KeyError:
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
 
-def hxfile(url: str) -> str:
-    dl_url = ''
-    try:
-        link = re.findall(r'\bhttps?://.*hxfile\.co\S+', url)[0]
-    except IndexError:
-        raise DirectDownloadLinkException("`No HXFile links found`\n")
-    bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_url(link)
-    return dl_url
+
 
 
 def useragent():
