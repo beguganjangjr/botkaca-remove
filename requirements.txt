@@ -6,3 +6,4 @@ hachoir
 ffmpeg-python
 js2py
 python-dotenv
+lk21
