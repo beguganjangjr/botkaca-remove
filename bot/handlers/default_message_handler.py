@@ -5,6 +5,15 @@ from bot.handlers import leech_handler
 import time
 import os
 import tempfile
+import mimetypes
+
+async def get_file_mimetype(filename):
+    mimetype = mimetypes.guess_type(filename)[0]
+    if not mimetype:
+        proc = await asyncio.create_subprocess_exec('file', '--brief', '--mime-type', filename, stdout=asyncio.subprocess.PIPE)
+        stdout, _ = await proc.communicate()
+        mimetype = stdout.decode().strip()
+    return mimetype or ''
 
 @Client.on_message(filters.private & ~filters.regex(r'^/') & ~filters.document)
 async def func(client : Client, message : Message):
