@@ -51,9 +51,10 @@ async def func(client : Client, message: Message):
             pass
         return
     
-    text_url = url.strip()    
-    if reply_to.document.file_name.lower().endswith(".torrent"):
-        link = await reply_to.download()
+    text_url = url.strip()
+    if reply_to is not None:
+        if reply_to.document.file_name.lower().endswith(".torrent"):
+            link = await reply_to.download()
 
     LOGGER.info(args)
     LOGGER.info(url)
