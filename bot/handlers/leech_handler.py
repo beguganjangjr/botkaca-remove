@@ -81,7 +81,7 @@ async def func(client : Client, message: Message):
         
     LOGGER.debug(f'Leeching : {link}')    
     try:
-        download = await loop.run_in_executor(None, partial(aria2_api.add_uris, link, options={
+        download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
             'continue_downloads' : True,
             'bt_tracker' : STATUS.DEFAULT_TRACKER,
             'out': name
