@@ -51,7 +51,8 @@ async def func(client : Client, message: Message):
             pass
         return
     
-    link = url.strip()
+    text_url = url.strip()
+    link = [text_url]
     if reply_to is not None:
         if reply_to.document.file_name.lower().endswith(".torrent"):
             link = await reply_to.download()
@@ -81,7 +82,7 @@ async def func(client : Client, message: Message):
         
     LOGGER.debug(f'Leeching : {link}')    
     try:
-        download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
+        download = await loop.run_in_executor(None, partial(aria2_api.add_uris, link, options={
             'continue_downloads' : True,
             'bt_tracker' : STATUS.DEFAULT_TRACKER,
             'out': name
