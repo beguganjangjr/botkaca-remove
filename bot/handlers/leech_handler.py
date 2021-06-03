@@ -33,13 +33,7 @@ loop = asyncio.get_event_loop()
 @Client.on_message(filters.command(COMMAND.LEECH))
 async def func(client : Client, message: Message):
     args = message.text.split(" ")
-    if len(args) <= 1:        
-        try:
-            await message.delete()
-        except:
-            pass
-        return
-    
+    reply_to = message.reply_to_message
     name_args = message.text.split("|")
     try:
         url = args[1]
@@ -48,7 +42,19 @@ async def func(client : Client, message: Message):
     try:
         name = name_args[1].strip()
     except IndexError:
-        name = ''
+        name = '' 
+        
+    if len(args) <= 1 and reply_to is None:        
+        try:
+            await message.delete()
+        except:
+            pass
+        return
+    
+    text_url = url.strip()    
+    if reply_to.document.file_name.lower().endswith(".torrent"):
+        link = await reply_to.download()
+
     LOGGER.info(args)
     LOGGER.info(url)
     LOGGER.info(name)
@@ -64,33 +70,16 @@ async def func(client : Client, message: Message):
     aria2_api = STATUS.ARIA2_API
     await asyncio_sleep(1)
     await aria2_api.start()
-    text_url = url.strip()
     LOGGER.debug(f'Leeching : {text_url}')
     #LOGGER.info(f'Leeching : {text_url}')
-    if "zippyshare.com" in text_url \
-        or "osdn.net" in text_url \
-        or "mediafire.com" in text_url \
-        or "cloud.mail.ru" in text_url \
-        or "cloud.mail.ru" in text_url \
-        or "github.com" in text_url \
-        or "yadi.sk" in text_url  \
-        or "racaty.net" in text_url:
-            try:
-                urisitring = direct_link_generator(text_url)
-                LOGGER.info(urisitring)
-                link = [urisitring]
-            except DirectDownloadLinkException as e:
-                LOGGER.info(f'{text_url}: {e}')
-        
-    else:
-        link = [text_url]
     try:
-        LOGGER.info(link)
-        #download = aria2_api.add_uris(link, options={
-        #    'continue_downloads' : True,
-        #    'bt_tracker' : STATUS.DEFAULT_TRACKER,
-        #    'out': name
-        #})
+        urisitring = direct_link_generator(text_url)
+        link = [urisitring]
+    except DirectDownloadLinkException as e:
+        LOGGER.info(f'{link}: {e}')
+        
+    LOGGER.debug(f'Leeching : {link}')    
+    try:
         download = await loop.run_in_executor(None, partial(aria2_api.add_uris, link, options={
             'continue_downloads' : True,
             'bt_tracker' : STATUS.DEFAULT_TRACKER,
