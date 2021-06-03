@@ -51,7 +51,7 @@ async def func(client : Client, message: Message):
             pass
         return
     
-    text_url = url.strip()
+    link = url.strip()
     if reply_to is not None:
         if reply_to.document.file_name.lower().endswith(".torrent"):
             link = await reply_to.download()
@@ -71,10 +71,10 @@ async def func(client : Client, message: Message):
     aria2_api = STATUS.ARIA2_API
     await asyncio_sleep(1)
     await aria2_api.start()
-    LOGGER.debug(f'Leeching : {text_url}')
+    LOGGER.debug(f'Leeching : {link}')
     #LOGGER.info(f'Leeching : {text_url}')
     try:
-        urisitring = direct_link_generator(text_url)
+        urisitring = direct_link_generator(link)
         link = [urisitring]
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
