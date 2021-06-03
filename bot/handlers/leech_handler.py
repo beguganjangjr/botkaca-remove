@@ -73,11 +73,11 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')
     #LOGGER.info(f'Leeching : {text_url}')
-    try:
-        urisitring = direct_link_generator(link)
-        link = [urisitring]
-    except DirectDownloadLinkException as e:
-        LOGGER.info(f'{link}: {e}')
+    #try:
+    #    urisitring = direct_link_generator(link)
+    #    link = [urisitring]
+    #except DirectDownloadLinkException as e:
+    #    LOGGER.info(f'{link}: {e}')
         
     LOGGER.debug(f'Leeching : {link}')    
     try:
