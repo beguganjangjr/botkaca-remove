@@ -11,7 +11,6 @@ import logging
 import json
 import re
 import urllib.parse
-#import lk21
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,6 +19,8 @@ from random import choice
 from js2py import EvalJs
 import requests
 from bs4 import BeautifulSoup
+import lk21
+from lk21.extractors.bypasser import Bypass
 
 from bot.handlers.exceptions import DirectDownloadLinkException
 
@@ -43,8 +44,16 @@ def direct_link_generator(text_url: str):
         return github(text_url)
     elif 'racaty.net' in text_url:
         return racaty(text_url)
-   # elif 'hxfile.co' in text_url:
-   #     return hxfile(text_url)    
+    elif 'hxfile.co' in link:
+        return hxfile(link)
+    elif 'anonfiles.com' in link:
+        return anon(link)
+    elif 'femax20.com' in link:
+        return femax20(link)
+    elif 'layarkacaxxi.icu' in link:
+        return layarkacaxxi(link)
+    elif '1drv.ms' in link:
+        return onedrive(link)    
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {text_url}')
 
@@ -156,8 +165,6 @@ def github(url: str) -> str:
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
 
 
-
-
 def useragent():
     """
     useragent random setter
@@ -184,3 +191,79 @@ def racaty(url: str) -> str:
     bss2=BeautifulSoup(rep.text,'html.parser')
     dl_url=bss2.find('a',{'id':'uniqueExpirylink'})['href']
     return dl_url
+
+def hxfile(url: str) -> str:
+    """ Hxfile direct links generator
+    based on https://github.com/breakdowns/slam-mirrorbot """
+    dl_url = ''
+    try:
+        link = re.findall(r'\bhttps?://.*hxfile\.co\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No Hxfile links found`\n")
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_url(link)
+    return dl_url
+
+
+def anon(url: str) -> str:
+    """ Anonfiles direct links generator
+    based on https://github.com/breakdowns/slam-mirrorbot """
+    dl_url = ''
+    try:
+        link = re.findall(r'\bhttps?://.*anonfiles\.com\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No Anonfiles links found`\n")
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_url(link)
+    return dl_url
+
+
+def femax20(url: str) -> str:
+    """ Fembed direct links generator
+    based on https://github.com/breakdowns/slam-mirrorbot """
+    dl_url = ''
+    try:
+        link = re.findall(r'\bhttps?://.*femax20\.com\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No Fembed links found`\n")
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_fembed(link)
+    lst_link = []
+    count = len(dl_url)
+    for i in dl_url:
+        lst_link.append(dl_url[i])
+    return lst_link[count-1]
+
+
+def layarkacaxxi(url: str) -> str:
+    """ Fembed direct links generator
+    based on https://github.com/breakdowns/slam-mirrorbot """
+    dl_url = ''
+    try:
+        link = re.findall(r'\bhttps?://.*layarkacaxxi\.icu\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("No Fembed links found\n")
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_fembed(link)
+    lst_link = []
+    count = len(dl_url)
+    for i in dl_url:
+        lst_link.append(dl_url[i])
+    return lst_link[count-1]
+
+
+def onedrive(link: str) -> str:
+    """ Onedrive direct link generator
+    Based on https://github.com/UsergeTeam/Userge """
+    link_without_query = urlparse(link)._replace(query=None).geturl()
+    direct_link_encoded = str(standard_b64encode(bytes(link_without_query, "utf-8")), "utf-8")
+    direct_link1 = f"https://api.onedrive.com/v1.0/shares/u!{direct_link_encoded}/root/content"
+    resp = requests.head(direct_link1)
+    if resp.status_code != 302:
+        return "`Error: Unauthorized link, the link may be private`"
+    dl_link = resp.next.url
+    file_name = dl_link.rsplit("/", 1)[1]
+    resp2 = requests.head(dl_link)
+    return dl_link
+
+
