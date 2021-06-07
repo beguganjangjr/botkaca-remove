@@ -7,43 +7,44 @@
 from https://github.com/AvinashReddy3108/PaperplaneExtended . I hereby take no credit of the following code other
 than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtended/commits/master/userbot/modules/direct_links.py
 for original authorship. """
+
 import logging
 import json
+import math
 import re
 import urllib.parse
-
-LOGGER = logging.getLogger(__name__)
-
 from os import popen
 from random import choice
-from js2py import EvalJs
+from urllib.parse import urlparse
+
+import lk21
 import requests
 from bs4 import BeautifulSoup
-import lk21
+from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
+from base64 import standard_b64encode
 
-from bot.handlers.exceptions import DirectDownloadLinkException
+from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
 
-def direct_link_generator(text_url: str):
+def direct_link_generator(link: str):
     """ direct links generator """
-    if not text_url:
+    if not link:
         raise DirectDownloadLinkException("`No links found!`")
-    elif 'zippyshare.com' in text_url:
-        LOGGER.info(text_url)
-        return zippy_share(text_url)
-    elif 'yadi.sk' in text_url:
-        return yandex_disk(text_url)
-    elif 'cloud.mail.ru' in text_url:
-        return cm_ru(text_url)
-    elif 'mediafire.com' in text_url:
-        return mediafire(text_url)
-    elif 'osdn.net' in text_url:
-        return osdn(text_url)
-    elif 'github.com' in text_url:
-        return github(text_url)
-    elif 'racaty.net' in text_url:
-        return racaty(text_url)
+    elif 'zippyshare.com' in link:
+        return zippy_share(link)
+    elif 'yadi.sk' in link:
+        return yandex_disk(link)
+    elif 'cloud.mail.ru' in link:
+        return cm_ru(link)
+    elif 'mediafire.com' in link:
+        return mediafire(link)
+    elif 'osdn.net' in link:
+        return osdn(link)
+    elif 'github.com' in link:
+        return github(link)
+    elif 'racaty.net' in link:
+        return racaty(link)
     elif 'hxfile.co' in link:
         return hxfile(link)
     elif 'anonfiles.com' in link:
@@ -53,17 +54,15 @@ def direct_link_generator(text_url: str):
     elif 'layarkacaxxi.icu' in link:
         return layarkacaxxi(link)
     elif '1drv.ms' in link:
-        return onedrive(link)    
+        return onedrive(link)
     else:
-        raise DirectDownloadLinkException(f'No Direct link function found for {text_url}')
+        raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
 
 def zippy_share(url: str) -> str:
     link = re.findall("https:/.(.*?).zippyshare", url)[0]
-    LOGGER.info("DISINI ZIPPY")
-    LOGGER.info(url)
     response_content = (requests.get(url)).content
-    bs_obj = BeautifulSoup(response_content, "html.parser")
+    bs_obj = BeautifulSoup(response_content, "lxml")
 
     try:
         js_script = bs_obj.find("div", {"class": "center",}).find_all(
@@ -87,29 +86,29 @@ def zippy_share(url: str) -> str:
 
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
-    Based on https://github.com/wldhx/yadisk-direct"""
+    Based on https://github.com/wldhx/yadisk-direct """
     try:
-        text_url = re.findall(r'\bhttps?://.*yadi\.sk\S+', url)[0]
+        link = re.findall(r'\bhttps?://.*yadi\.sk\S+', url)[0]
     except IndexError:
         reply = "`No Yandex.Disk links found`\n"
         return reply
     api = 'https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key={}'
     try:
-        dl_url = requests.get(api.format(text_url)).json()['href']
+        dl_url = requests.get(api.format(link)).json()['href']
         return dl_url
     except KeyError:
-        raise DirectDownloadLinkException("`Error: File not found / Download limit reached`\n")
+        raise DirectDownloadLinkException("`Error: File not found/Download limit reached`\n")
 
 
 def cm_ru(url: str) -> str:
     """ cloud.mail.ru direct links generator
-    Using https://github.com/JrMasterModelBuilder/cmrudl.py"""
+    Using https://github.com/JrMasterModelBuilder/cmrudl.py """
     reply = ''
     try:
-        text_url = re.findall(r'\bhttps?://.*cloud\.mail\.ru\S+', url)[0]
+        link = re.findall(r'\bhttps?://.*cloud\.mail\.ru\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No cloud.mail.ru links found`\n")
-    command = f'vendor/cmrudl.py/cmrudl -s {text_url}'
+    command = f'vendor/cmrudl.py/cmrudl -s {link}'
     result = popen(command).read()
     result = result.splitlines()[-1]
     try:
@@ -123,10 +122,10 @@ def cm_ru(url: str) -> str:
 def mediafire(url: str) -> str:
     """ MediaFire direct links generator """
     try:
-        text_url = re.findall(r'\bhttps?://.*mediafire\.com\S+', url)[0]
+        link = re.findall(r'\bhttps?://.*mediafire\.com\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No MediaFire links found`\n")
-    page = BeautifulSoup(requests.get(text_url).content, 'html.parser')
+    page = BeautifulSoup(requests.get(link).content, 'lxml')
     info = page.find('a', {'aria-label': 'Download file'})
     dl_url = info.get('href')
     return dl_url
@@ -136,28 +135,28 @@ def osdn(url: str) -> str:
     """ OSDN direct links generator """
     osdn_link = 'https://osdn.net'
     try:
-        text_url = re.findall(r'\bhttps?://.*osdn\.net\S+', url)[0]
+        link = re.findall(r'\bhttps?://.*osdn\.net\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No OSDN links found`\n")
     page = BeautifulSoup(
-        requests.get(text_url, allow_redirects=True).content, 'html.parser')
+        requests.get(link, allow_redirects=True).content, 'lxml')
     info = page.find('a', {'class': 'mirror_link'})
-    text_url = urllib.parse.unquote(osdn_link + info['href'])
+    link = urllib.parse.unquote(osdn_link + info['href'])
     mirrors = page.find('form', {'id': 'mirror-select-form'}).findAll('tr')
     urls = []
     for data in mirrors[1:]:
         mirror = data.find('input')['value']
-        urls.append(re.sub(r'm=(.*)&f', f'm={mirror}&f', text_url))
+        urls.append(re.sub(r'm=(.*)&f', f'm={mirror}&f', link))
     return urls[0]
 
 
 def github(url: str) -> str:
     """ GitHub direct links generator """
     try:
-        text_url = re.findall(r'\bhttps?://.*github\.com.*releases\S+', url)[0]
+        re.findall(r'\bhttps?://.*github\.com.*releases\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No GitHub Releases links found`\n")
-    download = requests.get(text_url, stream=True, allow_redirects=False)
+    download = requests.get(url, stream=True, allow_redirects=False)
     try:
         dl_url = download.headers["location"]
         return dl_url
@@ -165,32 +164,23 @@ def github(url: str) -> str:
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
 
 
-def useragent():
-    """
-    useragent random setter
-    """
-    useragents = BeautifulSoup(
-        requests.get(
-            'https://developers.whatismybrowser.com/'
-            'useragents/explore/operating_system_name/android/').content,
-        'html.parser').findAll('td', {'class': 'useragent'})
-    user_agent = choice(useragents)
-    return user_agent.text
-
 def racaty(url: str) -> str:
+    """ Racaty direct links generator
+    based on https://github.com/breakdowns/slam-mirrorbot """
     dl_url = ''
     try:
-        text_url = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
+        link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No Racaty links found`\n")
-    reqs=requests.get(text_url)
+    reqs=requests.get(link)
     bss=BeautifulSoup(reqs.text,'html.parser')
     op=bss.find('input',{'name':'op'})['value']
     id=bss.find('input',{'name':'id'})['value']
-    rep=requests.post(text_url,data={'op':op,'id':id})
+    rep=requests.post(link,data={'op':op,'id':id})
     bss2=BeautifulSoup(rep.text,'html.parser')
     dl_url=bss2.find('a',{'id':'uniqueExpirylink'})['href']
     return dl_url
+
 
 def hxfile(url: str) -> str:
     """ Hxfile direct links generator
@@ -267,3 +257,14 @@ def onedrive(link: str) -> str:
     return dl_link
 
 
+def useragent():
+    """
+    useragent random setter
+    """
+    useragents = BeautifulSoup(
+        requests.get(
+            'https://developers.whatismybrowser.com/'
+            'useragents/explore/operating_system_name/android/').content,
+        'lxml').findAll('td', {'class': 'useragent'})
+    user_agent = choice(useragents)
+    return user_agent.text
