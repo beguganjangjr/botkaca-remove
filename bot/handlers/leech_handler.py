@@ -75,7 +75,7 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')
     #LOGGER.info(f'Leeching : {text_url}')
-    if "zippyshare.com" in link \    
+    if "zippyshare.com" in link \
         or "osdn.net" in link \
         or "mediafire.com" in link \
         or "cloud.mail.ru" in link \
