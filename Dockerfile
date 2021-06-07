@@ -19,7 +19,7 @@ WORKDIR /app
 
 ENV PATH="/app/venv/bin:$PATH" VIRTUAL_ENV="/app/venv"
 
-RUN apk --no-cache -q add \
+RUN apk --update --no-cache -q add \
     python3 libffi \
     ffmpeg bash unzip curl wget
 COPY setup.sh .
