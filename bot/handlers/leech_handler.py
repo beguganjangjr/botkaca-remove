@@ -54,8 +54,9 @@ async def func(client : Client, message: Message):
     text_url = url.strip()
     link = [text_url]
     if reply_to is not None:
-        if reply_to.document.file_name.lower().endswith(".torrent"):
-            link = await reply_to.download()
+        if reply_to.document is not None:
+            if reply_to.document.file_name.lower().endswith(".torrent"):
+                link_path = await reply_to.download()
 
     LOGGER.info(args)
     LOGGER.info(url)
@@ -74,31 +75,54 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')
     #LOGGER.info(f'Leeching : {text_url}')
-    #try:
-    #    urisitring = direct_link_generator(link)
-    #    link = [urisitring]
-    #except DirectDownloadLinkException as e:
-    #    LOGGER.info(f'{link}: {e}')
-        
-    LOGGER.debug(f'Leeching : {link}')    
-    try:
-        download = await loop.run_in_executor(None, partial(aria2_api.add_uris, link, options={
-            'continue_downloads' : True,
-            'bt_tracker' : STATUS.DEFAULT_TRACKER,
-            'out': name
-        }))       
-    except Exception as e:
-        if "No URI" in str(e):
-            await reply.edit_text(
-                LOCAL.ARIA2_NO_URI
-            )
-            return
-        else:
-            LOGGER.error(str(e))
+    if "zippyshare.com" in link \    
+        or "osdn.net" in link \
+        or "mediafire.com" in link \
+        or "cloud.mail.ru" in link \
+        or "cloud.mail.ru" in link \
+        or "github.com" in link \
+        or "yadi.sk" in link  \
+        or "racaty.net" in link:
+            try:
+                urisitring = direct_link_generator(link)
+                LOGGER.info(urisitring)
+                link = [urisitring]
+            except DirectDownloadLinkException as e:
+                LOGGER.info(f'{link}: {e}')
+      
+    if reply_to is not None:
+               
+        try:
+            download = await loop.run_in_executor(None, partial(aria2_api.add_torrent, link_path, uris=None, position=None, options={
+                'continue_downloads' : True,
+                'bt_tracker' : STATUS.DEFAULT_TRACKER
+            }))    
+        except Exception as e:
             await reply.edit_text(
                 str(e)
             )
             return
+    else:
+        
+    
+        try:
+            download = await loop.run_in_executor(None, partial(aria2_api.add_uris, link, options={
+                'continue_downloads' : True,
+                'bt_tracker' : STATUS.DEFAULT_TRACKER,
+                'out': name
+            }))       
+        except Exception as e:
+            if "No URI" in str(e):
+                await reply.edit_text(
+                LOCAL.ARIA2_NO_URI
+                )
+                return
+            else:
+                LOGGER.error(str(e))
+                await reply.edit_text(
+                    str(e)
+                )
+                return
 
     if await progress_dl(reply, aria2_api, download.gid):
         download = aria2_api.get_download(download.gid)
