@@ -76,7 +76,8 @@ async def generate_directs(url):
     except IndexError:
       raise DirectDownloadLinkException("`No MediaFire links found`\n")
       
-   elif 'hxfile.co' in url:
+  elif 'hxfile.co' in url:
+    
     dl_url = ''
     try:
       link = re.findall(r'\bhttps?://.*hxfile\.co\S+', url)[0]
