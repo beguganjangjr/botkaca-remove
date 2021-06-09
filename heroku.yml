@@ -1,3 +1,3 @@
 build:
   docker:
-    worker: Dockerfile2
+    worker: Dockerfile
