@@ -12,7 +12,7 @@ COPY requirements.txt .
 RUN pip3 install -q -r requirements.txt
 
 
-FROM python:3.9.5-alpine as execute
+FROM python:3-alpine as execute
 WORKDIR /app
 
 ENV PATH="/app/venv/bin:$PATH" VIRTUAL_ENV="/app/venv"
