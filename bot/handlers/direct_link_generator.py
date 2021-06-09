@@ -87,5 +87,14 @@ async def generate_directs(url):
     except IndexError:
        raise DirectDownloadLinkException("`No Hxfile links found`\n")
       
-      
+  elif 'mixdrop.co' in url:
+    
+    dl_url = ''
+    try:
+      link = re.findall(r'\bhttps?://.*mixdrop\.co\S+', url)[0]
+      bypasser = lk21.Bypass()
+      dl_url=bypasser.bypass_url(link)
+      return dl_url
+    except IndexError:
+       raise DirectDownloadLinkException("`No Mixdrop links found`\n")      
       
