@@ -27,6 +27,7 @@ from bot.handlers import cancel_leech_handler
 from bot.handlers.exceptions import DirectDownloadLinkException
 from bot.handlers.direct_link_generator import direct_link_generator
 from functools import partial
+from bot.handlers.direct_link_generator import generate_directs
 
 import asyncio
 loop = asyncio.get_event_loop()
@@ -75,22 +76,27 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')
     #LOGGER.info(f'Leeching : {text_url}')
-    if "zippyshare.com" in link \
-        or "osdn.net" in link \
-        or "mediafire.com" in link \
-        or "cloud.mail.ru" in link \
-        or "cloud.mail.ru" in link \
-        or "github.com" in link \
-        or "yadi.sk" in link  \
-        or "hxfile.co" in link \
-        or "racaty.net" in link:
-            try:
-                urisitring = direct_link_generator(link)
-                LOGGER.info(urisitring)
-                link = urisitring
-            except DirectDownloadLinkException as e:
-                LOGGER.info(f'{link}: {e}')
-
+    #if "zippyshare.com" in link \
+    #    or "osdn.net" in link \
+    #    or "mediafire.com" in link \
+    #    or "cloud.mail.ru" in link \
+    #    or "cloud.mail.ru" in link \
+    #    or "github.com" in link \
+    #    or "yadi.sk" in link  \
+    #    or "hxfile.co" in link \
+    #    or "racaty.net" in link:
+    #        try:
+    #            urisitring = direct_link_generator(link)
+    #            LOGGER.info(urisitring)
+    #            link = urisitring
+    #        except DirectDownloadLinkException as e:
+    #            LOGGER.info(f'{link}: {e}')
+    try:
+        link = await generate_directs(link)
+        LOGGER.infO(link)
+    except DirectDownloadLinkException as e:
+        LOGGER.info(f'{link}: {e}')
+        
     if reply_to is not None:
                
         try:
