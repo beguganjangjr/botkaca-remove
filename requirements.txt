@@ -2,6 +2,8 @@ Pyrogram
 tgcrypto
 aria2p
 beautifulsoup4
-#aiohttp
-#lxml
+hachoir
+ffmpeg-python
 js2py
+python-dotenv
+lk21
