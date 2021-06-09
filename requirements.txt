@@ -1,4 +1,4 @@
-Pyrogram
+pyrogram
 tgcrypto
 aria2p
 beautifulsoup4
