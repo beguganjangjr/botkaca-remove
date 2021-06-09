@@ -20,7 +20,7 @@ ENV PATH="/app/venv/bin:$PATH" VIRTUAL_ENV="/app/venv"
 RUN apk --no-cache -q add \
     libffi \
     aria2 \
-    ffmpeg
+    ffmpeg bash
     
 COPY setup.sh .
 RUN bash setup.sh
