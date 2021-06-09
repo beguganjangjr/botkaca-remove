@@ -12,7 +12,7 @@ RUN pip3 install -r requirements.txt
     
 COPY setup.sh .
 RUN bash setup.sh
-COPY --from=prepare_env /app/venv venv
+RUN apk del musl-dev gcc
 COPY bot bot
 
 CMD ["python3", "-m", "bot"]
