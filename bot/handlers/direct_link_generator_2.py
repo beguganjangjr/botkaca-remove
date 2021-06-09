@@ -21,7 +21,7 @@ async def generate_directs(url):
       link = re.findall(r'\bhttps?://.*zippyshare\.com\S+', url)[0]
       restext = (requests.get(url)).text
       base_url = re.search('http.+.com', response_text).group()
-      page_soup = BeautifulSoup(restext, 'lxml')
+      page_soup = BeautifulSoup(restext, 'html.parser')
       scripts = page_soup.find_all("script", {"type": "text/javascript"})
       for script in scripts:
         if "getElementById('dlbutton')" in script.text:
@@ -69,7 +69,7 @@ async def generate_directs(url):
   elif 'mediafire.com' in url:
     try:
       link = re.findall(r'\bhttps?://.*mediafire\.com\S+', url)[0]
-      page = BeautifulSoup(requests.get(link).content, 'lxml')
+      page = BeautifulSoup(requests.get(link).content, 'html.parser')
       info = page.find('a', {'aria-label': 'Download file'})
       dl_url = info.get('href')
       return dl_url
