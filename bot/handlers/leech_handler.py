@@ -25,7 +25,7 @@ from bot.plugins import aria2, zipfile
 from bot.handlers import upload_to_tg_handler
 from bot.handlers import cancel_leech_handler
 from bot.handlers.exceptions import DirectDownloadLinkException
-from bot.handlers.direct_link_generator import direct_link_generator
+#from bot.handlers.direct_link_generator import direct_link_generator
 from functools import partial
 from bot.handlers.direct_link_generator import generate_directs
 
