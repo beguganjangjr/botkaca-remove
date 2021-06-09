@@ -93,7 +93,7 @@ async def func(client : Client, message: Message):
     #            LOGGER.info(f'{link}: {e}')
     try:
         link = await generate_directs(link)
-        LOGGER.infO(link)
+        LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         
