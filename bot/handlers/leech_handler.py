@@ -82,6 +82,7 @@ async def func(client : Client, message: Message):
         or "cloud.mail.ru" in link \
         or "github.com" in link \
         or "yadi.sk" in link  \
+        or "hxfile.co" in link \
         or "racaty.net" in link:
             try:
                 urisitring = direct_link_generator(link)
