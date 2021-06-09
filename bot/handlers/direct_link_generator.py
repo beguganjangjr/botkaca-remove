@@ -62,7 +62,7 @@ def direct_link_generator(link: str):
 def zippy_share(url: str) -> str:
     link = re.findall("https:/.(.*?).zippyshare", url)[0]
     response_content = (requests.get(url)).content
-    bs_obj = BeautifulSoup(response_content, "lxml")
+    bs_obj = BeautifulSoup(response_content, "html.parser")
 
     try:
         js_script = bs_obj.find("div", {"class": "center",}).find_all(
@@ -125,7 +125,7 @@ def mediafire(url: str) -> str:
         link = re.findall(r'\bhttps?://.*mediafire\.com\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No MediaFire links found`\n")
-    page = BeautifulSoup(requests.get(link).content, 'lxml')
+    page = BeautifulSoup(requests.get(link).content, 'html.parser')
     info = page.find('a', {'aria-label': 'Download file'})
     dl_url = info.get('href')
     return dl_url
@@ -139,7 +139,7 @@ def osdn(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("`No OSDN links found`\n")
     page = BeautifulSoup(
-        requests.get(link, allow_redirects=True).content, 'lxml')
+        requests.get(link, allow_redirects=True).content, 'html.parser')
     info = page.find('a', {'class': 'mirror_link'})
     link = urllib.parse.unquote(osdn_link + info['href'])
     mirrors = page.find('form', {'id': 'mirror-select-form'}).findAll('tr')
@@ -265,6 +265,6 @@ def useragent():
         requests.get(
             'https://developers.whatismybrowser.com/'
             'useragents/explore/operating_system_name/android/').content,
-        'lxml').findAll('td', {'class': 'useragent'})
+        'html.parser').findAll('td', {'class': 'useragent'})
     user_agent = choice(useragents)
     return user_agent.text
