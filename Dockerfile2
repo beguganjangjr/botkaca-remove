@@ -2,7 +2,7 @@ FROM python:3-alpine
 WORKDIR /app
 
 RUN apk --no-cache -q add \
-    ffmpeg bash
+    ffmpeg bash gcc
 
 
 COPY requirements.txt .
