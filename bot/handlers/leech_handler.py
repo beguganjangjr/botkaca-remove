@@ -52,7 +52,7 @@ async def func(client : Client, message: Message):
         return
     
     text_url = url.strip()
-    #link = text_url
+    link = text_url
     if reply_to is not None:
         if reply_to.document is not None:
             if reply_to.document.file_name.lower().endswith(".torrent"):
@@ -73,25 +73,24 @@ async def func(client : Client, message: Message):
     aria2_api = STATUS.ARIA2_API
     await asyncio_sleep(1)
     await aria2_api.start()
-    LOGGER.debug(f'Leeching : {text_url}')
+    LOGGER.debug(f'Leeching : {link}')
     #LOGGER.info(f'Leeching : {text_url}')
-    if "zippyshare.com" in text_url \
-        or "osdn.net" in text_url \
-        or "mediafire.com" in text_url \
-        or "cloud.mail.ru" in text_url \
-        or "cloud.mail.ru" in text_url \
-        or "github.com" in text_url \
-        or "yadi.sk" in text_url  \
-        or "hxfile.co" in text_url \
-        or "racaty.net" in text_url:
+    if "zippyshare.com" in link \
+        or "osdn.net" in link \
+        or "mediafire.com" in link \
+        or "cloud.mail.ru" in link \
+        or "cloud.mail.ru" in link \
+        or "github.com" in link \
+        or "yadi.sk" in link  \
+        or "hxfile.co" in link \
+        or "racaty.net" in link:
             try:
                 urisitring = direct_link_generator(link)
                 LOGGER.info(urisitring)
-                link = [urisitring]
+                link = urisitring
             except DirectDownloadLinkException as e:
                 LOGGER.info(f'{link}: {e}')
-    else:
-        link = [text_url]
+
     if reply_to is not None:
                
         try:
@@ -108,7 +107,7 @@ async def func(client : Client, message: Message):
         
     
         try:
-            download = await loop.run_in_executor(None, partial(aria2_api.add_uris, link, options={
+            download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                 'continue_downloads' : True,
                 'bt_tracker' : STATUS.DEFAULT_TRACKER,
                 'out': name
