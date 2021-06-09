@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
 from base64 import standard_b64encode
-from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
+from bot.handlers.exceptions import DirectDownloadLinkException
 
 async def generate_directs(url):
   if 'zippyshare.com' in url:
