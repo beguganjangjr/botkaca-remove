@@ -97,39 +97,24 @@ async def func(client : Client, message: Message):
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         
-    if reply_to is not None:
-               
-        try:
-            download = await loop.run_in_executor(None, partial(aria2_api.add_torrent, link_path, uris=None, position=None, options={
-                'continue_downloads' : True,
-                'bt_tracker' : STATUS.DEFAULT_TRACKER
-            }))    
-        except Exception as e:
+    try:
+        download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
+            'continue_downloads' : True,
+            'bt_tracker' : STATUS.DEFAULT_TRACKER,
+            'out': name
+        }))
+    except Exception as e:
+        if "No URI" in str(e):
+            await reply.edit_text(
+                LOCAL.ARIA2_NO_URI
+            )
+            return
+        else:
+            LOGGER.error(str(e))
             await reply.edit_text(
                 str(e)
             )
             return
-    else:
-        
-    
-        try:
-            download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
-                'continue_downloads' : True,
-                'bt_tracker' : STATUS.DEFAULT_TRACKER,
-                'out': name
-            }))       
-        except Exception as e:
-            if "No URI" in str(e):
-                await reply.edit_text(
-                LOCAL.ARIA2_NO_URI
-                )
-                return
-            else:
-                LOGGER.error(str(e))
-                await reply.edit_text(
-                    str(e)
-                )
-                return
 
     if await progress_dl(reply, aria2_api, download.gid):
         download = aria2_api.get_download(download.gid)
