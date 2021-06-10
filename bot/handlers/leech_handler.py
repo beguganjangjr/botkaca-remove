@@ -88,26 +88,26 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     
     #LOGGER.info(f'Leeching : {text_url}')
-    #if "zippyshare.com" in link \
-    #    or "osdn.net" in link \
-    #    or "mediafire.com" in link \
-    #    or "cloud.mail.ru" in link \
-    #    or "cloud.mail.ru" in link \
-    #    or "github.com" in link \
-    #    or "yadi.sk" in link  \
-    #    or "hxfile.co" in link \
-    #    or "racaty.net" in link:
-    #        try:
-    #            urisitring = direct_link_generator(link)
-    #            LOGGER.info(urisitring)
-    #            link = urisitring
-    #        except DirectDownloadLinkException as e:
-    #            LOGGER.info(f'{link}: {e}')
-    try:
-        link = await generate_directs(link)
-        LOGGER.info(link)
-    except DirectDownloadLinkException as e:
-        LOGGER.info(f'{link}: {e}')
+    if "zippyshare.com" in link \
+        or "osdn.net" in link \
+        or "mediafire.com" in link \
+        or "cloud.mail.ru" in link \
+        or "cloud.mail.ru" in link \
+        or "github.com" in link \
+        or "yadi.sk" in link  \
+        or "hxfile.co" in link \
+        or "racaty.net" in link:
+            try:
+                urisitring = await generate_directs(link)
+                LOGGER.info(urisitring)
+                link = urisitring
+            except DirectDownloadLinkException as e:
+                LOGGER.info(f'{link}: {e}')
+    #try:
+    #    link = await generate_directs(link)
+    #    LOGGER.info(link)
+    #except DirectDownloadLinkException as e:
+    #    LOGGER.info(f'{link}: {e}')
     LOGGER.debug(f'Leeching : {link}')    
     try:
         download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
