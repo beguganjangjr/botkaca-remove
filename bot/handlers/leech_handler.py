@@ -33,34 +33,46 @@ import asyncio
 loop = asyncio.get_event_loop()
 @Client.on_message(filters.command(COMMAND.LEECH))
 async def func(client : Client, message: Message):
-    args = message.text.split(" ")
-    reply_to = message.reply_to_message
-    name_args = message.text.split("|")
+    mesg = message.text.split('\n')
+    message_args = mesg[0].split(' ')
+    name_args = mesg[0].split('|')
     try:
-        url = args[1]
+        link = message_args[1]
+        print(link)
+        if link.startswith("|") or link.startswith("pswd: "):
+            link = ''
     except IndexError:
-        url = ''
+        link = ''
     try:
-        name = name_args[1].strip()
+        name = name_args[1]
+        name = name.strip()
+        if name.startswith("pswd: "):
+            name = ''
     except IndexError:
-        name = '' 
-        
-    if len(args) <= 1 and reply_to is None:        
-        try:
-            await message.delete()
-        except:
-            pass
-        return
-    
-    text_url = url.strip()
-    link = text_url
-    if reply_to is not None:
-        if reply_to.document is not None:
-            if reply_to.document.file_name.lower().endswith(".torrent"):
-                link_path = await reply_to.download()
+        name = ''
+    try:
+        ussr = urllib.parse.quote(mesg[1], safe='')
+        pssw = urllib.parse.quote(mesg[2], safe='')
+    except:
+        ussr = ''
+        pssw = ''
+    if ussr != '' and pssw != '':
+        link = link.split("://", maxsplit=1)
+        link = f'{link[0]}://{ussr}:{pssw}@{link[1]}'
+    pswd = re.search('(?<=pswd: )(.*)', message.text)
+    if pswd is not None:
+      pswd = pswd.groups()
+      pswd = " ".join(pswd)
+    LOGGER.info(link)
+    link = link.strip()
 
-    LOGGER.info(args)
-    LOGGER.info(url)
+    #if reply_to is not None:
+    #    if reply_to.document is not None:
+    #        if reply_to.document.file_name.lower().endswith(".torrent"):
+    #            link_path = await reply_to.download()
+
+    #LOGGER.info(args)
+    #LOGGER.info(link)
     LOGGER.info(name)
     await asyncio_sleep(1)   
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
@@ -74,7 +86,7 @@ async def func(client : Client, message: Message):
     aria2_api = STATUS.ARIA2_API
     await asyncio_sleep(1)
     await aria2_api.start()
-    LOGGER.debug(f'Leeching : {link}')
+    
     #LOGGER.info(f'Leeching : {text_url}')
     #if "zippyshare.com" in link \
     #    or "osdn.net" in link \
@@ -96,7 +108,7 @@ async def func(client : Client, message: Message):
         LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
-        
+    LOGGER.debug(f'Leeching : {link}')    
     try:
         download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
             'continue_downloads' : True,
