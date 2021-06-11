@@ -101,23 +101,12 @@ async def generate_directs(url):
 
         
   elif 'streamtape.com' in url:
-    bypasser = lk21.Bypass()
-    functions_list = getmembers(Bypass, isfunction)
-    LOGGER.info(functions_list)
-    
-    try:
-      dl_url = Bypass.__bypass_streamtape(url)
-      #LOGGER.info(dl_link)
-      LOGGER.info(dl_url)
-      return dl_url
-    except IndexError:
-      raise DirectDownloadLinkException("`No streamtape links found`\n")
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0",'Referer': 'https://{0}/'.format(self.url)}
+    file_id = urlparse.urlparse(url).path.split("/")[-1]
+    retext = requests.get(link, headers=self.headers).text
+    src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', retext)
+    LOGGER.info(src)
+    #if src:
       
-      
-
-    #lst_link = []
-    #count = len(dl_url)
-    #for i in dl_url:
-    #    lst_link.append(dl_url[i])
-    #return lst_link[count-1] 
+    return src
       
