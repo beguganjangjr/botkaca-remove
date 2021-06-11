@@ -106,7 +106,7 @@ async def generate_directs(url):
     LOGGER.info(functions_list)
     
     try:
-      dl_url=bypasser.bypass_url(url)
+      dl_url = Bypass.__bypass_streamtape(url)
       #LOGGER.info(dl_link)
       LOGGER.info(dl_url)
       return dl_url
