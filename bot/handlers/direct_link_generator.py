@@ -14,6 +14,7 @@ from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
 from base64 import standard_b64encode
 from bot.handlers.exceptions import DirectDownloadLinkException
+LOGGER = logging.getLogger(__name__)
 
 async def generate_directs(url):
   if 'zippyshare.com' in url:
@@ -100,13 +101,12 @@ async def generate_directs(url):
 
         
   elif 'streamtape.com' in url:
-    
-    dl_url = ''
-    try:
-      link = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
-      bypasser = lk21.Bypass()
-      dl_url=bypasser.bypass_url(link)
-      return dl_url
-    except IndexError:
-       raise DirectDownloadLinkException("`No Streamtape links found`\n")          
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_url(link)
+    LOGGER.info(dl_url)
+    lst_link = []
+    count = len(dl_url)
+    for i in dl_url:
+        lst_link.append(dl_url[i])
+    return lst_link[count-1] 
       
