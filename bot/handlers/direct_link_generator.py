@@ -101,9 +101,13 @@ async def generate_directs(url):
 
         
   elif 'streamtape.com' in url:
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0",'Referer': 'https://{0}/'.format(self.url)}
-    file_id = urlparse.urlparse(url).path.split("/")[-1]
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0", "Referer": url}
+    file_id = json_data['id']
+    request_parameters = json_data['cors'].split('/')[-1]
+    link = 'https://streamtape.com/get_video?id='+file_id+'&'+request_parameters
+    LOGGER.info(link)
     retext = requests.get(link, headers=self.headers).text
+    LOGGER.info(retext)
     src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', retext)
     LOGGER.info(src)
     #if src:
