@@ -105,7 +105,7 @@ async def generate_directs(url):
     try:
       link = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
       bypasser = lk21.Bypass()
-      dl_url=bypasser.__bypass_streamtape(link)
+      dl_url=bypasser.bypass_url(link)
       return dl_url
     except IndexError:
        raise DirectDownloadLinkException("`No Streamtape links found`\n")          
