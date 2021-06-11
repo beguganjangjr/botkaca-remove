@@ -102,7 +102,7 @@ async def generate_directs(url):
         
   elif 'streamtape.com' in url:
     bypasser = lk21.Bypass()
-    functions_list = getmembers(bypasser, isfunction)
+    functions_list = getmembers(Bypass, isfunction)
     LOGGER.info(functions_list)
     
     try:
