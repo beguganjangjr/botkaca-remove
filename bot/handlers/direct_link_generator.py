@@ -96,5 +96,17 @@ async def generate_directs(url):
       dl_url=bypasser.bypass_url(link)
       return dl_url
     except IndexError:
-       raise DirectDownloadLinkException("`No Mixdrop links found`\n")      
+       raise DirectDownloadLinkException("`No Mixdrop links found`\n")     
+
+        
+  elif 'streamtape.com' in url:
+    
+    dl_url = ''
+    try:
+      link = re.findall(r'\bhttps?://.*mixdrop\.co\S+', url)[0]
+      bypasser = lk21.Bypass()
+      dl_url=bypasser.__bypass_streamtape(link)
+      return dl_url
+    except IndexError:
+       raise DirectDownloadLinkException("`No Mixdrop links found`\n")          
       
