@@ -104,9 +104,10 @@ async def generate_directs(url):
     bypasser = lk21.Bypass()
     dl_url=bypasser.bypass_url(url)
     LOGGER.info(dl_url)
-    lst_link = []
-    count = len(dl_url)
-    for i in dl_url:
-        lst_link.append(dl_url[i])
-    return lst_link[count-1] 
+    return dl_url
+    #lst_link = []
+    #count = len(dl_url)
+    #for i in dl_url:
+    #    lst_link.append(dl_url[i])
+    #return lst_link[count-1] 
       
