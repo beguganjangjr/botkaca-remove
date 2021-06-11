@@ -96,6 +96,7 @@ async def func(client : Client, message: Message):
         or "github.com" in link \
         or "yadi.sk" in link  \
         or "hxfile.co" in link \
+        or "streamtape.com" in link \
         or "racaty.net" in link:
             try:
                 urisitring = await generate_directs(link)
