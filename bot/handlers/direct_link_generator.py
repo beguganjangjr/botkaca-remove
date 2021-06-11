@@ -11,7 +11,7 @@ import lk21
 import requests
 from bs4 import BeautifulSoup
 from js2py import EvalJs
-from lk21.extractors import bypasser
+from lk21.extractors.bypasser import Bypass
 from base64 import standard_b64encode
 from bot.handlers.exceptions import DirectDownloadLinkException
 LOGGER = logging.getLogger(__name__)
