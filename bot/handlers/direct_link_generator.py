@@ -11,7 +11,7 @@ import lk21
 import requests
 from bs4 import BeautifulSoup
 from js2py import EvalJs
-from lk21.extractors.bypasser import Bypass
+from lk21.extractors import bypasser
 from base64 import standard_b64encode
 from bot.handlers.exceptions import DirectDownloadLinkException
 LOGGER = logging.getLogger(__name__)
@@ -102,7 +102,14 @@ async def generate_directs(url):
         
   elif 'streamtape.com' in url:
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_url(url)
+    try:
+      dl_url=bypasser.__bypass_streamtape(url)
+      return dl_url
+    except IndexError:
+      raise DirectDownloadLinkException("`No streamtape links found`\n")
+      
+      
+    LOGGER.info(dl_link)
     LOGGER.info(dl_url)
     return dl_url
     #lst_link = []
