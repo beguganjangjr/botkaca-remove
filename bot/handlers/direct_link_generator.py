@@ -6,7 +6,7 @@ import urllib.parse
 from os import popen
 from random import choice
 from urllib.parse import urlparse
-
+from inspect import getmembers, isfunction
 import lk21
 import requests
 from bs4 import BeautifulSoup
@@ -102,16 +102,19 @@ async def generate_directs(url):
         
   elif 'streamtape.com' in url:
     bypasser = lk21.Bypass()
+    functions_list = getmembers(bypasser, isfunction)
+    LOGGER.info(functions_list)
+    
     try:
-      dl_url=bypasser.__bypass_streamtape(url)
+      dl_url=bypasser.bypass_streamtape(url)
+      #LOGGER.info(dl_link)
+      LOGGER.info(dl_url)
       return dl_url
     except IndexError:
       raise DirectDownloadLinkException("`No streamtape links found`\n")
       
       
-    LOGGER.info(dl_link)
-    LOGGER.info(dl_url)
-    return dl_url
+
     #lst_link = []
     #count = len(dl_url)
     #for i in dl_url:
