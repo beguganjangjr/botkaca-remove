@@ -11,7 +11,7 @@ async def func(client : Client, message : Message):
 
 
 @Client.on_message(filters.command(URL_REGEX))
-async def func(client : Client, message : Message):
+async def funci(client : Client, message : Message):
     urls = re.findall(URL_REGEX, message.text)
     message.text = "/" + COMMAND.LEECH + " " + urls
     return await leech_handler.func(client, message)
