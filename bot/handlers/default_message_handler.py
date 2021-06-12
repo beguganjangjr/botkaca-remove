@@ -10,7 +10,7 @@ async def func(client : Client, message : Message):
     return await leech_handler.func(client, message)
 
 
-@Client.on_message(filters.command(URL_REGEX) & ~filters.regex(r'^/'))
+@Client.on_message(filters.command(URL_REGEX))
 async def func(client : Client, message : Message):
     urls = re.findall(URL_REGEX, message.text)
     message.text = "/" + COMMAND.LEECH + " " + urls
