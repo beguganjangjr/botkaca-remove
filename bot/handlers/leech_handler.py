@@ -136,18 +136,18 @@ async def func(client : Client, message: Message):
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
                 'continue_downloads' : True,
-                'bt_tracker' : STATUS.DEFAULT_TRACKER
-            }))
+                'bt_tracker' : STATUS.DEFAULT_TRACKER}))
+            
         elif is_torrent(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_torrent, link, options={
                 'continue_downloads' : True,
-                'bt_tracker' : STATUS.DEFAULT_TRACKER
-            }))
+                'bt_tracker' : STATUS.DEFAULT_TRACKER}))
+            
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 'out': 
-             }))    
+                 'out': name}))
+             
 
     except Exception as e:
         if "No URI" in str(e):
