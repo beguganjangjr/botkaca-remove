@@ -31,6 +31,27 @@ from bot.handlers.direct_link_generator import generate_directs
 
 import asyncio
 loop = asyncio.get_event_loop()
+MAGNET_REGEX = r"magnet:\?xt=urn:btih:[a-zA-Z0-9]*"
+
+URL_REGEX = r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+"
+
+def is_url(url: str):
+    url = re.findall(URL_REGEX, url)
+    if url:
+        return True
+    return False
+def is_magnet(url: str):
+    magnet = re.findall(MAGNET_REGEX, url)
+    if magnet:
+        return True
+    return False
+
+def is_torrent(file_name: str):
+    if os.path.exists(file_name) and file_name.lower().endswith(".torrent"):
+        return True
+    return False
+
+
 @Client.on_message(filters.command(COMMAND.LEECH))
 async def func(client : Client, message: Message):
     mesg = message.text.split('\n')
@@ -109,13 +130,25 @@ async def func(client : Client, message: Message):
     #    LOGGER.info(link)
     #except DirectDownloadLinkException as e:
     #    LOGGER.info(f'{link}: {e}')
-    LOGGER.debug(f'Leeching : {link}')    
+    LOGGER.debug(f'Leeching : {link}')
+    
     try:
-        download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
-            'continue_downloads' : True,
-            'bt_tracker' : STATUS.DEFAULT_TRACKER,
-            'out': name
-        }))
+        if is_magnet(link):
+            download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
+                'continue_downloads' : True,
+                'bt_tracker' : STATUS.DEFAULT_TRACKER
+            }))}
+        elif is_torrent(link):
+            download = await loop.run_in_executor(None, partial(aria2_api.add_torrent, link, options={
+                'continue_downloads' : True,
+                'bt_tracker' : STATUS.DEFAULT_TRACKER
+            }))}
+        else:
+             download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
+                 'continue_downloads' : True,
+                 'out': 
+             }))    
+
     except Exception as e:
         if "No URI" in str(e):
             await reply.edit_text(
