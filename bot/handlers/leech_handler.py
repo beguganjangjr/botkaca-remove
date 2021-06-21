@@ -6,7 +6,7 @@ import re
 import urllib.parse
 #import aiohttp
 import requests
-
+import os
 LOGGER = logging.getLogger(__name__)
 
 # GOAL:
