@@ -22,6 +22,7 @@ tracker_urlsss = [
 #async with aiohttp.ClientSession() as ses:
 #    async with ses.get(tracker_urlsss) as res:
 trackers_list = session.get(tracker_urlsss)
+trackers_list = trackers_list.json(content_type='text/html')
 #       try:
 #            result = await res.text
 #            print(result)
