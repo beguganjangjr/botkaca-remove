@@ -361,7 +361,7 @@ def dood(url: str) -> str:
     link.replace('/d/','/e/')
     #LOGGER.info(link)
     testing = '165.22.109.60:8080'
-    proxies = {'https': 'http://{0}'.format(proxy)}
+    proxies = {'https': 'http://{0}'.format(testing)}
     session = requests.Session()
     session.proxies.update(proxies)
     html = session.get(link, headers=headers, timeout=None).content
