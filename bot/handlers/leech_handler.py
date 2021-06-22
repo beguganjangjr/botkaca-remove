@@ -74,6 +74,7 @@ async def func(client : Client, message: Message):
     try:
         proxy = name_args[2]
         proxy = proxy.strip()
+        proxy = 'http://{0}'.format(proxy)
     except:
         proxy = ''      
     try:
