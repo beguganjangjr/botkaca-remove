@@ -33,7 +33,7 @@ except ImportError:
 ua = UserAgent()
 ua = ua.Random()
 
-async def direct_link_generator(link: str):
+async def direct_link_generator(link: str, proxy):
     """ direct links generator """
     if not link:
         raise DirectDownloadLinkException("`No links found!`")
@@ -89,7 +89,7 @@ async def direct_link_generator(link: str):
         or 'dood.so' in link \
         or 'dood.cx' in link \
         or 'dood.to' in link:
-            return dood(link)
+            return dood(link, proxy)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
@@ -349,7 +349,7 @@ def doodi(url: str) -> str:
     #return dl_url        
 
 
-def dood(url: str) -> str:
+def dood(url: str, proxy) -> str:
     """ dood direct links generator """
     web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
     media_id = web_url[1]
@@ -360,7 +360,7 @@ def dood(url: str) -> str:
                'Referer': 'https://{0}/'.format(host)}
     link.replace('/d/','/e/')
     #LOGGER.info(link)
-    proxies = {'https': 'http://{0}'.format(CONFIG.PROXY)}
+    proxies = {'https': 'http://{0}'.format(proxy)}
     session = requests.Session()
     session.proxies.update(proxies)
     html = session.get(link, headers=headers, timeout=None).content
