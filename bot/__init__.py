@@ -15,7 +15,7 @@ tracker_urlsss = [
     ]
 trackers_list = ''
 for i in range(len(tracker_urlsss)):
-    response = session.get(tracker_urlsss[i])
+    response = requests.get(tracker_urlsss[i])
     response.encoding = "utf-8"
     trackers_list += "\n"
     trackers_list += response.text
