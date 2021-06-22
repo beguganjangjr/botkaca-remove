@@ -3,6 +3,11 @@
 
 import os
 from bot.config import Config
+import request
+trackers_list = request.get(
+    "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt"
+).text.replace("\n\n", ",")
+
 
 CONFIG = Config({
     'ROOT' : os.getcwd(),
@@ -20,7 +25,7 @@ CONFIG = Config({
     'UPLOAD_AS_DOC' : 0,
     'UPLOAD_AS_ZIP' : 0,
     'ARIA2_DIR' : 'downloads',
-    'TORRENT_TRACKER' : '',
+    'TORRENT_TRACKER' : f'{trackers_list}',
     'BAR_SIZE' : 10,
     'THUMBNAIL_NAME' : 'default_thumbnail.jpg',
     'LOCAL' : 'en',
