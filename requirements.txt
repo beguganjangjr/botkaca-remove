@@ -8,3 +8,4 @@ js2py
 python-dotenv
 lk21
 getuseragent
+aiohttp
