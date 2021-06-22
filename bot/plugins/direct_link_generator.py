@@ -33,7 +33,7 @@ LOGGER = logging.getLogger(__name__)
 ua = UserAgent()
 ua = ua.Random()
 
-async def direct_link_generator(link: str, proxy):
+async def direct_link_generator(link: str):
     """ direct links generator """
     if not link:
         raise DirectDownloadLinkException("`No links found!`")
