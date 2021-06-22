@@ -19,13 +19,14 @@ tracker_urlsss = [
 #    tumtorrenttrackerstringi += response.text
 #trackers_list = requests.get(tracker_urlsss).text.strip().replace("\n\n", ",")
 #trackers_list = trackers_list.replace(" ", ",")
-async with aiohttp.ClientSession() as ses:
-    async with ses.get(tracker_urlsss) as res:
-       try:
-            result = await res.text
-            print(result)
-       except Exception as error:
-           print(error)
+#async with aiohttp.ClientSession() as ses:
+#    async with ses.get(tracker_urlsss) as res:
+trackers_list = session.get(tracker_urlsss).text
+#       try:
+#            result = await res.text
+#            print(result)
+#       except Exception as error:
+#           print(error)
 
 CONFIG = Config({
     'ROOT' : os.getcwd(),
