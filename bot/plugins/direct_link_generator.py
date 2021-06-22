@@ -360,10 +360,12 @@ def dood(url: str) -> str:
                'Referer': 'https://{0}/'.format(host)}
     link.replace('/d/','/e/')
     #LOGGER.info(link)
-    testing = '165.22.109.60:8080'
-    proxies = {'https': 'http://{0}'.format(testing)}
+    #testing = '165.22.109.60:8080'
+    #proxies = {'https': 'http://{0}'.format(testing)}
+    proxies = {'https': 'https://165.22.109.60:8080'}
     session = requests.Session()
-    session.proxies.update(proxies)
+    #session.proxies.update(proxies)
+    session.proxies = proxies
     html = session.get(link, headers=headers, timeout=None).content
     text = html.decode('utf-8')
     #response = session.get(link).text
