@@ -3,16 +3,29 @@
 
 import os
 from bot.config import Config
-import requests
+import aiohttp
+session = aiohttp.ClientSession()
+
 
 tracker_urlsss = [
     "https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt",
     "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all_udp.txt",
     "https://newtrackon.com/api/live"
     ]
-trackers_list = requests.get(tracker_urlsss).text.strip().replace("\n\n", ",")
+#for i in range(len(tracker_urlsss)):
+#    response = session.get(tracker_urlsss[i])
+#    response.encoding = "utf-8"
+#    tumtorrenttrackerstringi += "\n"
+#    tumtorrenttrackerstringi += response.text
+#trackers_list = requests.get(tracker_urlsss).text.strip().replace("\n\n", ",")
 #trackers_list = trackers_list.replace(" ", ",")
-
+async with aiohttp.ClientSession() as ses:
+    async with ses.get(tracker_urlsss) as res:
+       try:
+            result = await res.text
+            print(result)
+       except Exception as error:
+           print(error)
 
 CONFIG = Config({
     'ROOT' : os.getcwd(),
