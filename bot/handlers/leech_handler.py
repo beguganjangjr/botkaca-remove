@@ -24,8 +24,8 @@ from bot import LOCAL, STATUS, CONFIG, COMMAND
 from bot.plugins import aria2, zipfile
 from bot.handlers import upload_to_tg_handler
 from bot.handlers import cancel_leech_handler
-from bot.handlers.exceptions import DirectDownloadLinkException
-#from bot.handlers.direct_link_generator import direct_link_generator
+from bot.plugins.exceptions import DirectDownloadLinkException
+from bot.plugins.direct_link_generator import direct_link_generator
 from functools import partial
 from bot.handlers.direct_link_generator import generate_directs
 
@@ -108,6 +108,12 @@ async def func(client : Client, message: Message):
     if not is_url(link) and not is_magnet(link):
         await message.reply_text('No download source provided')
         return
+    try:
+        link = await direct_link_generator(link)
+        LOGGER.info(link)
+    except DirectDownloadLinkException as e:
+        LOGGER.info(f'{link}: {e}')
+    
     #if reply_to is not None:
     #    if reply_to.document is not None:
     #        if reply_to.document.file_name.lower().endswith(".torrent"):
@@ -115,7 +121,7 @@ async def func(client : Client, message: Message):
 
     #LOGGER.info(args)
     #LOGGER.info(link)
-    LOGGER.info(name)
+    #LOGGER.info(name)
     await asyncio_sleep(1)   
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
@@ -128,30 +134,26 @@ async def func(client : Client, message: Message):
     aria2_api = STATUS.ARIA2_API
     await asyncio_sleep(1)
     await aria2_api.start()
+    LOGGER.debug(f'Leeching : {link}')    
     
     #LOGGER.info(f'Leeching : {text_url}')
-    if "zippyshare.com" in link \
-        or "osdn.net" in link \
-        or "mediafire.com" in link \
-        or "cloud.mail.ru" in link \
-        or "cloud.mail.ru" in link \
-        or "github.com" in link \
-        or "yadi.sk" in link  \
-        or "hxfile.co" in link \
-        or "streamtape.com" in link \
-        or "racaty.net" in link:
-            try:
-                urisitring = await generate_directs(link)
-                LOGGER.info(urisitring)
-                link = urisitring
-            except DirectDownloadLinkException as e:
-                LOGGER.info(f'{link}: {e}')
-    #try:
-    #    link = await generate_directs(link)
-    #    LOGGER.info(link)
-    #except DirectDownloadLinkException as e:
-    #    LOGGER.info(f'{link}: {e}')
-    LOGGER.debug(f'Leeching : {link}')
+    #if "zippyshare.com" in link \
+    #    or "osdn.net" in link \
+    #    or "mediafire.com" in link \
+    #    or "cloud.mail.ru" in link \
+    #    or "cloud.mail.ru" in link \
+    #    or "github.com" in link \
+    #    or "yadi.sk" in link  \
+    #    or "hxfile.co" in link \
+    #    or "streamtape.com" in link \
+    #    or "racaty.net" in link:
+    #        try:
+    #            urisitring = await generate_directs(link)
+    #            LOGGER.info(urisitring)
+    #            link = urisitring
+    #        except DirectDownloadLinkException as e:
+    #            LOGGER.info(f'{link}: {e}')
+
     
     try:
         if is_magnet(link):
