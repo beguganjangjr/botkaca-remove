@@ -31,7 +31,7 @@ except ImportError:
     from urllib import urlencode
     
 ua = UserAgent()
-
+ua = ua.Random()
 
 async def direct_link_generator(link: str):
     """ direct links generator """
@@ -296,7 +296,7 @@ def streamtape(url: str) -> str:
         link = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
         media_id = link[1]
         host = link[0]
-        user_agent = ua.ff
+        user_agent = ua
         headers = {'User-Agent': user_agent,
                    'Referer': 'https://{0}/'.format(host)}
         rcontent = requests.get(url, headers=headers).content
@@ -356,7 +356,7 @@ def dood(url: str) -> str:
     host = web_url[0]
     #LOGGER.info(f"{host}{media_id}")
     link = 'https://' + host + '/e/' + media_id
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
+    headers = {'User-Agent': ua,
                'Referer': 'https://{0}/'.format(host)}
     link.replace('/d/','/e/')
     #LOGGER.info(link)
@@ -387,7 +387,7 @@ def mixdrop(url: str) -> str:
     host = web_url[0]
     link = 'https://' + host + '/e/' + media_id
     LOGGER.info(f'dl_gen_link: {link}')
-    user_agent = ua.ff
+    user_agent = ua
     
     headers = {'Origin': 'https://{}'.format(host),
                'Referer': 'https://{}/'.format(host),
