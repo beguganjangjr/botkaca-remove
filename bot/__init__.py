@@ -6,7 +6,7 @@ from bot.config import Config
 import requests
 trackers_list = requests.get(
     "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt"
-).text.replace("\n\n", ",")
+).text.replace("\n\n", " ").replace(" ", ",")
 
 
 CONFIG = Config({
