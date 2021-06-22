@@ -27,7 +27,7 @@ from bot.handlers import cancel_leech_handler
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins.direct_link_generator import direct_link_generator
 from functools import partial
-from bot.handlers.direct_link_generator import generate_directs
+#from bot.handlers.direct_link_generator import generate_directs
 
 import asyncio
 loop = asyncio.get_event_loop()
