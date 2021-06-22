@@ -4,7 +4,7 @@
 import os
 from bot.config import Config
 import aiohttp
-
+import requests
 
 
 
