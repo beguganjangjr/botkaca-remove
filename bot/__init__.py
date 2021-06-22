@@ -21,7 +21,7 @@ tracker_urlsss = [
 #trackers_list = trackers_list.replace(" ", ",")
 #async with aiohttp.ClientSession() as ses:
 #    async with ses.get(tracker_urlsss) as res:
-trackers_list = session.get(tracker_urlsss).text()
+trackers_list = session.get(tracker_urlsss)
 #       try:
 #            result = await res.text
 #            print(result)
