@@ -99,10 +99,10 @@ async def func(client : Client, message: Message):
         if not is_url(link) and not is_magnet(link) or len(link) == 0:
             if file is not None:
                 if file.mime_type != "application/x-bittorrent":
-                    await message.reply_text('No download source provided')
+                    await message.reply_text('No download source provided / No torrent file detected')
                     return
                 else:
-                    link = reply_to.download()
+                    link = await reply_to.download()
     else:
         tag = None
     if not is_url(link) and not is_magnet(link):
