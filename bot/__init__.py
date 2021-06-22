@@ -6,6 +6,18 @@ from bot.config import Config
 import aiohttp
 import requests
 
+def liststring(string):
+    list = list(string.split(","))
+    list = list(dict.fromkeys(list))
+    return list
+
+def replacestring(string):
+    string = string.replace("\n\n",",")
+    string = string.replace("\n",",")
+    string = string.replace(",,",",")
+    string = string.rstrip(',')
+    string = string.lstrip(',')
+    return string
 
 
 tracker_urlsss = [
@@ -14,15 +26,17 @@ tracker_urlsss = [
     "https://newtrackon.com/api/live"
     ]
 trackers_list = ''
+list_trackers = ''
 for i in range(len(tracker_urlsss)):
     response = requests.get(tracker_urlsss[i])
     response.encoding = "utf-8"
-    #trackers_list += "\n"
-    response = response.text.strip()
-    response = response.replace("\n\n", ",")
-    trackers_list += response
-
-
+    trackers_list += "\n"
+    #response = response.text.strip()
+    #response = response.replace("\n\n", ",")
+    trackers_list += response.text
+    
+joinstring = liststring(replacestring(trackers_list))
+trackers_list = ','.join(joinstring)
 CONFIG = Config({
     'ROOT' : os.getcwd(),
     'WORKDIR' : 'sessions',
