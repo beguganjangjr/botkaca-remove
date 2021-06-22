@@ -7,7 +7,7 @@ URL_REGEX = r"""(?i)\b((?:https?:(?:/{1,3}|[a-z0-9%])|[a-z0-9.\-]+[.](?:com|net|
 
 @Client.on_message(filters.private & ~filters.regex(r'^/') & ~filters.document | filters.regex(URL_REGEX) & ~filters.regex(r'^/'))
 async def func(client : Client, message : Message):
-    if message.caption is not None:
+    if message.text == message.caption:
         return
     message.text = "/" + COMMAND.LEECH + " " + message.text
     return await leech_handler.func(client, message)
