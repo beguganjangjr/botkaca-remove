@@ -20,7 +20,7 @@ from math import floor
 from pyrogram import Client, filters 
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aria2p.downloads import Download, File
-from bot import LOCAL, STATUS, CONFIG, COMMAND
+from bot import LOCAL, STATUS, CONFIG, COMMAND, session
 from bot.plugins import aria2, zipfile
 from bot.handlers import upload_to_tg_handler
 from bot.handlers import cancel_leech_handler
@@ -72,6 +72,11 @@ async def func(client : Client, message: Message):
     except IndexError:
         name = ''
     try:
+        proxy = name_args[2]
+        proxy = proxy.strip()
+    except:
+        proxy = ''      
+    try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
     except:
@@ -109,19 +114,11 @@ async def func(client : Client, message: Message):
         await message.reply_text('No download source provided')
         return
     try:
-        link = await direct_link_generator(link)
+        link = await direct_link_generator(link, proxy)
         LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
     
-    #if reply_to is not None:
-    #    if reply_to.document is not None:
-    #        if reply_to.document.file_name.lower().endswith(".torrent"):
-    #            link_path = await reply_to.download()
-
-    #LOGGER.info(args)
-    #LOGGER.info(link)
-    #LOGGER.info(name)
     await asyncio_sleep(1)   
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
@@ -136,25 +133,7 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
     
-    #LOGGER.info(f'Leeching : {text_url}')
-    #if "zippyshare.com" in link \
-    #    or "osdn.net" in link \
-    #    or "mediafire.com" in link \
-    #    or "cloud.mail.ru" in link \
-    #    or "cloud.mail.ru" in link \
-    #    or "github.com" in link \
-    #    or "yadi.sk" in link  \
-    #    or "hxfile.co" in link \
-    #    or "streamtape.com" in link \
-    #    or "racaty.net" in link:
-    #        try:
-    #            urisitring = await generate_directs(link)
-    #            LOGGER.info(urisitring)
-    #            link = urisitring
-    #        except DirectDownloadLinkException as e:
-    #            LOGGER.info(f'{link}: {e}')
-
-    
+ 
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
@@ -169,6 +148,7 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
+                 'all-proxy': proxy,
                  'out': name}))
              
 
