@@ -360,6 +360,7 @@ def dood(url: str, proxy) -> str:
                'Referer': 'https://{0}/'.format(host)}
     link.replace('/d/','/e/')
     #LOGGER.info(link)
+    testing = '165.22.109.60:8080'
     proxies = {'https': 'http://{0}'.format(proxy)}
     session = requests.Session()
     session.proxies.update(proxies)
@@ -367,6 +368,7 @@ def dood(url: str, proxy) -> str:
     text = html.decode('utf-8')
     #response = session.get(link).text
     LOGGER.info(f'proxy: {proxies}')
+    LOGGER.info(f'user-agent: {ua}')
     match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
     if match:
         token = match.group(2)
