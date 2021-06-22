@@ -4,9 +4,13 @@
 import os
 from bot.config import Config
 import requests
-trackers_list = requests.get(
-    "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt"
-).text.strip().replace("\n\n", ",")
+
+tracker_urlsss = [
+    "https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt",
+    "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all_udp.txt",
+    "https://newtrackon.com/api/live"
+    ]
+trackers_list = requests.get(tracker_urlsss).text.strip().replace("\n\n", ",")
 #trackers_list = trackers_list.replace(" ", ",")
 
 
