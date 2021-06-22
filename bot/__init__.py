@@ -5,7 +5,7 @@ import os
 from bot.config import Config
 import aiohttp
 
-session = aiohttp.ClientSession()
+
 
 
 tracker_urlsss = [
@@ -13,6 +13,7 @@ tracker_urlsss = [
     "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all_udp.txt",
     "https://newtrackon.com/api/live"
     ]
+trackers_list = ''
 for i in range(len(tracker_urlsss)):
     response = session.get(tracker_urlsss[i])
     response.encoding = "utf-8"
@@ -55,7 +56,7 @@ CONFIG = Config({
 
 # GOAL:
 # prepare workdir
-
+session = aiohttp.ClientSession()
 workdir = os.path.join(CONFIG.ROOT, CONFIG.WORKDIR)
 if not os.path.isdir(workdir):
     os.mkdir(workdir)
