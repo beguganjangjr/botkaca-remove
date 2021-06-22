@@ -23,7 +23,8 @@ CONFIG = Config({
     'TORRENT_TRACKER' : '',
     'BAR_SIZE' : 10,
     'THUMBNAIL_NAME' : 'default_thumbnail.jpg',
-    'LOCAL' : 'en'
+    'LOCAL' : 'en',
+    'PROXY' : None
 })
 
 # GOAL:
