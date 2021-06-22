@@ -90,6 +90,7 @@ async def func(client : Client, message: Message):
       pswd = pswd.groups()
       pswd = " ".join(pswd)
     LOGGER.info(link)
+    LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
     reply_to = message.reply_to_message
     if reply_to is not None:
