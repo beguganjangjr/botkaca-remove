@@ -7,7 +7,7 @@ import requests
 trackers_list = requests.get(
     "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt"
 ).text.replace("\n\n", " ")
-tracker_list = tracker_list.replace(" ", ",")
+trackers_list = trackers_list.replace(" ", ",")
 
 
 CONFIG = Config({
