@@ -349,7 +349,7 @@ def doodi(url: str) -> str:
     #return dl_url        
 
 
-def dood(url: str, proxy) -> str:
+def dood(url: str, proxy):
     """ dood direct links generator """
     web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
     media_id = web_url[1]
