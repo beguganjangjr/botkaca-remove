@@ -74,7 +74,7 @@ async def func(client : Client, message: Message):
     try:
         proxy = name_args[2]
         proxy = proxy.strip()
-        proxy = 'http://{0}'.format(proxy)
+        
     except:
         proxy = ''      
     try:
@@ -134,7 +134,7 @@ async def func(client : Client, message: Message):
     await asyncio_sleep(1)
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
-    
+    proxy = 'http://{0}'.format(proxy)
  
     try:
         if is_magnet(link):
