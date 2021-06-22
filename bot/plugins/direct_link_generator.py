@@ -17,7 +17,7 @@ import urllib.parse
 from os import popen
 from random import choice
 import lk21
-
+import logging
 import requests
 from bs4 import BeautifulSoup
 from bot import CONFIG
@@ -29,7 +29,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-    
+LOGGER = logging.getLogger(__name__)    
 ua = UserAgent()
 ua = ua.Random()
 
@@ -349,7 +349,7 @@ def doodi(url: str) -> str:
     #return dl_url        
 
 
-def dood(url: str, proxy):
+def dood(url: str, proxy) -> str:
     """ dood direct links generator """
     web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
     media_id = web_url[1]
@@ -366,7 +366,7 @@ def dood(url: str, proxy):
     html = session.get(link, headers=headers, timeout=None).content
     text = html.decode('utf-8')
     #response = session.get(link).text
-    #LOGGER.info(f'text: {text}')
+    LOGGER.info(f'proxy: {proxies}')
     match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
     if match:
         token = match.group(2)
