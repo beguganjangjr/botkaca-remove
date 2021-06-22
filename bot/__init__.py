@@ -17,19 +17,11 @@ trackers_list = ''
 for i in range(len(tracker_urlsss)):
     response = requests.get(tracker_urlsss[i])
     response.encoding = "utf-8"
-    trackers_list += "\n"
-    trackers_list += response.text
-#trackers_list = requests.get(tracker_urlsss).text.strip().replace("\n\n", ",")
-#trackers_list = trackers_list.replace(" ", ",")
-#async with aiohttp.ClientSession() as ses:
-#    async with ses.get(tracker_urlsss) as res:
-#trackers_list = session.get(tracker_urlsss)
-#trackers_list = trackers_list.json(content_type='text/html')
-#       try:
-#            result = await res.text
-#            print(result)
-#       except Exception as error:
-#           print(error)
+    #trackers_list += "\n"
+    response = response.text.strip()
+    response = response.replace("\n\n", ",")
+    trackers_list += response
+
 
 CONFIG = Config({
     'ROOT' : os.getcwd(),
