@@ -3,8 +3,8 @@
 
 import os
 from bot.config import Config
-import request
-trackers_list = request.get(
+import requests
+trackers_list = requests.get(
     "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt"
 ).text.replace("\n\n", ",")
 
