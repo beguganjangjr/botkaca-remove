@@ -105,7 +105,7 @@ async def func(client : Client, message: Message):
                     link = reply_to.download()
     else:
         tag = None
-    if not bot_utils.is_url(link) and not bot_utils.is_magnet(link):
+    if not is_url(link) and not is_magnet(link):
         await message.reply_text('No download source provided')
         return
     #if reply_to is not None:
