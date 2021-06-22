@@ -365,7 +365,7 @@ def dood(url: str) -> str:
     #proxies = {'https': 'http://{0}'.format(testing)}
     #proxies = {'https': 'https://165.22.109.60:8080'}
     proxies = {'http': 'http://178.128.208.252:8080',
-               'https': 'http://178.128.208.252:8080}
+               'https': 'http://178.128.208.252:8080'}
     session = requests.Session()
     session.proxies.update(proxies)
     #session.proxies = proxies
