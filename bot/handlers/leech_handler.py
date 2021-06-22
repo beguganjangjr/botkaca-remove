@@ -86,7 +86,26 @@ async def func(client : Client, message: Message):
       pswd = " ".join(pswd)
     LOGGER.info(link)
     link = link.strip()
+    reply_to = message.reply_to_message
+    if reply_to is not None:
+        file = None
+        tag = reply_to.from_user.username
+        media_array = [reply_to.document, reply_to.video, reply_to.audio]
+        for i in media_array:
+            if i is not None:
+                file = i
+                break
 
+        if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) or len(link) == 0:
+            if file is not None:
+                    return
+                else:
+                    link = reply_to.download()
+    else:
+        tag = None
+    if not bot_utils.is_url(link) and not bot_utils.is_magnet(link):
+        await message.reply_text('No download source provided')
+        return
     #if reply_to is not None:
     #    if reply_to.document is not None:
     #        if reply_to.document.file_name.lower().endswith(".torrent"):
