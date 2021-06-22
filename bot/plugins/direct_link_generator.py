@@ -20,7 +20,7 @@ import lk21
 
 import requests
 from bs4 import BeautifulSoup
-from bot import LOGGER, PROXY
+from bot import CONFIG
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
 from js2py import EvalJs
@@ -360,7 +360,7 @@ def dood(url: str) -> str:
                'Referer': 'https://{0}/'.format(host)}
     link.replace('/d/','/e/')
     #LOGGER.info(link)
-    proxies = {'https': 'http://{0}'.format(PROXY)}
+    proxies = {'https': 'http://{0}'.format(CONFIG.PROXY)}
     session = requests.Session()
     session.proxies.update(proxies)
     html = session.get(link, headers=headers, timeout=None).content
