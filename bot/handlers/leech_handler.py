@@ -96,7 +96,7 @@ async def func(client : Client, message: Message):
                 file = i
                 break
 
-        if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) or len(link) == 0:
+        if not is_url(link) and not is_magnet(link) or len(link) == 0:
             if file is not None:
                 if file.mime_type != "application/x-bittorrent":
                     await message.reply_text('No download source provided')
