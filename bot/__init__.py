@@ -7,9 +7,10 @@ import aiohttp
 import requests
 
 def liststring(string):
-    list = list(string.split(","))
-    list = list(dict.fromkeys(list))
-    return list
+    kopyasiz = list(string.split(","))
+    kopyasiz = list(dict.fromkeys(kopyasiz))
+    return kopyasiz
+
 
 def replacestring(string):
     string = string.replace("\n\n",",")
