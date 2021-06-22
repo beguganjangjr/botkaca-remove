@@ -356,7 +356,8 @@ def dood(url: str) -> str:
     host = web_url[0]
     #LOGGER.info(f"{host}{media_id}")
     link = 'https://' + host + '/e/' + media_id
-    headers = {'User-Agent': ua,
+    user_agent = ua
+    headers = {'User-Agent': user_agent,
                'Referer': 'https://{0}/'.format(host)}
     link.replace('/d/','/e/')
     #LOGGER.info(link)
@@ -371,7 +372,8 @@ def dood(url: str) -> str:
     text = html.decode('utf-8')
     #response = session.get(link).text
     LOGGER.info(f'proxy: {proxies}')
-    LOGGER.info(f'user-agent: {ua}')
+    LOGGER.info(f'user-agent: {user_agent}')
+    LOGGER.info(f'text: {text}')
     match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
     if match:
         token = match.group(2)
