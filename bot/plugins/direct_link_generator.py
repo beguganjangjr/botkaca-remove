@@ -206,20 +206,20 @@ async def direct_link_generator(url, session):
                    'Referer': 'https://{0}/'.format(host)}
         link.replace('/d/','/e/')
         proxies = 'http://165.22.109.60:8080'
-        async with session as ses:
-            async with ses.get(url=link, headers=headers, proxy=proxies) as response:
-                text = await response.text()
-            LOGGER.info(f'text: {text}')
-            match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
-            if match:
-                token = match.group(2)
-                url = 'https://{0}{1}'.format(host, match.group(1))
-                async with ses.get(url=url, headers=headers, proxy=proxies) as response:
-                    html = await response.text()
-                    dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
+        async with aiohttp.ClientSession() as ttksess:
+            response = ses.get(url=link, headers=headers, proxy=proxies)
+            text = await response.text()
+         LOGGER.info(f'text: {text}')
+         match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
+         if match:
+            token = match.group(2)
+            url = 'https://{0}{1}'.format(host, match.group(1))
+            async with ses.get(url=url, headers=headers, proxy=proxies) as response:
+                html = await response.text()
+                dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
                     #LOGGER.info(f'dl_url: {dl_url}')
-                    return dl_url
-            raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+                return dl_url
+         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
                     
             
             
