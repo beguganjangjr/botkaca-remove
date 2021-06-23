@@ -169,8 +169,9 @@ async def direct_link_generator(url, proxy):
       r = re.search(r'location\s*=\s*"([^"]+)', d_content)
       if r:
         url = 'https://{0}{1}'.format(host, r.group(1))
-        async with session.get(link, headers=headers) as response:
-          d_content = await response.text()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(link, headers=headers) as response:
+                d_content = await response.text()
       if '(p,a,c,k,e,d)' in d_content:
         d_content = get_packed_data(d_content)
       r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
@@ -189,7 +190,7 @@ async def direct_link_generator(url, proxy):
             link = 'https://' + host + '/v/' + media_id
             headers = {'User-Agent': user_agent,
                        'Referer': 'https://{0}/'.format(host)}
-            async with session as ses:
+            async with aiohttp.ClientSession() as ses::
                 async with ses.get(url=link, headers=headers) as response:
                     d_content = await response.text()
             src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
