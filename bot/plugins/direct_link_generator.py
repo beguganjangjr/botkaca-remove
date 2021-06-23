@@ -160,7 +160,7 @@ async def direct_link_generator(url, proxy):
       headers = {'Origin': 'https://{}'.format(host),
                  'Referer': 'https://{}/'.format(host),
                  'User-Agent': user_agent}
-      async with session as ses:
+      async with aiohttp.ClientSession() as ses:
         async with ses.get(url=link, headers=headers) as response:
             d_content = await response.text()
 
@@ -190,7 +190,7 @@ async def direct_link_generator(url, proxy):
             link = 'https://' + host + '/v/' + media_id
             headers = {'User-Agent': user_agent,
                        'Referer': 'https://{0}/'.format(host)}
-            async with aiohttp.ClientSession() as ses::
+            async with aiohttp.ClientSession() as ses:
                 async with ses.get(url=link, headers=headers) as response:
                     d_content = await response.text()
             src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
