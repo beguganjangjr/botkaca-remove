@@ -186,26 +186,28 @@ async def direct_link_generator(url, proxy):
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")        
       
     elif 'streamtape.com' in url:
-        
+               
         try:
-            web_url = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
-            media_id = web_url[1]
-            host = web_url[0]
-            user_agent = ua
-            link = 'https://' + host + '/v/' + media_id
-            headers = {'User-Agent': user_agent,
-                       'Referer': 'https://{0}/'.format(host)}
-            session_timeout = aiohttp.ClientTimeout(total=None)
-            async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
-                async with ses.get(url=link, headers=headers, timeout=None) as response:
-                    d_content = await response.text()
-            src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
-            if src:
-                src_url = 'https:{0}{1}&stream=1'.format(src.group(1), src.group(2))
-                dl_url = get_redirect_url(src_url, headers) + append_headers(headers)
-                return dl_url
+            link = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
         except IndexError:
-            raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+            raise DirectDownloadLinkException("`No streamtape links found`\n")
+        web_url = re.findall(r'(?://|\.)(streamtape\.com)/(?:e|v)/([0-9a-zA-Z]+)', link)[0]    
+        media_id = web_url[1]
+        host = web_url[0]
+        user_agent = ua
+        #link = 'https://' + host + '/v/' + media_id
+        headers = {'User-Agent': user_agent,
+                   'Referer': 'https://{0}/'.format(host)}
+        session_timeout = aiohttp.ClientTimeout(total=None)
+        async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+            async with ses.get(url=link, headers=headers, timeout=None) as response:
+                d_content = await response.text()
+        src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
+        if src:
+            src_url = 'https:{0}{1}&stream=1'.format(src.group(1), src.group(2))
+            dl_url = get_redirect_url(src_url, headers) + append_headers(headers)
+            return dl_url
+        raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
                 
     elif 'dood.la' in url or 'dood.so' in url or 'dood.cx' in url or 'dood.to' in url:
         web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
