@@ -173,7 +173,7 @@ async def direct_link_generator(url, proxy):
           
         #LOGGER.info(f'd_content: {d_content}')  
       
-        r = re.search(r'location\s*=\s*"([^"]+)', html)
+        r = re.search(r'location\s*=\s*"([^"]+)', d_content)
         if r:
             link = 'https://{0}{1}'.format(host, r.group(1))
             async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
