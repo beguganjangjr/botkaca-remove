@@ -42,7 +42,7 @@ def append_headers(headers):
     headers = '|%s' % '&'.join(['%s=%s' % (key, urllib.parse.quote_plus(headers[key])) for key in headers])
     return headers
 
-async def direct_link_generator(url, proxy, session):
+async def direct_link_generator(url, session):
     #blocklinks
     if 'mega.nz' in url or 'drive.google.com' in url or 'uptobox.com' in url \
     or '1fiecher.com' in url or 'googleusercontent.com' in url:
@@ -151,8 +151,12 @@ async def direct_link_generator(url, proxy, session):
       headers = {'Origin': 'https://{}'.format(host),
                  'Referer': 'https://{}/'.format(host),
                  'User-Agent': user_agent}
-      async with session.get(link, headers=headers) as response:
-        d_content = await response.text()
+      async with session(headers=headers) as ses:
+        async with ses.get(url=link, headers=headers) as response:
+            d_content = await response.text()
+        #reponse = await ses.get(link, headers=headers)
+        #resp = await response.read()
+        #d_content = await response.text()
         
       r = re.search(r'location\s*=\s*"([^"]+)', d_content)
       if r:
