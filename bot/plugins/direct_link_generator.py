@@ -210,8 +210,8 @@ async def direct_link_generator(url, session):
                    'Referer': 'https://{0}/'.format(host)}
         link.replace('/d/','/e/')
         proxies = 'http://{0}'.format(CONFIG.PROXY)
-        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as ses:
-            async with ses.get(url=link, headers=headers, proxy=proxies) as response:
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(url=link, headers=headers, proxy=proxies, timeout=None) as response:
                 text = await response.text()
            
         #LOGGER.info(f'text: {text}')
@@ -219,7 +219,7 @@ async def direct_link_generator(url, session):
         if match:
             token = match.group(2)
             url = 'https://{0}{1}'.format(host, match.group(1))
-            async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as ses:
+            async with aiohttp.ClientSession() as ses:
                 async with ses.get(url=url, headers=headers, proxy=proxies) as response:
                     html = await response.text()
                 #response = await ses.get(url=url, headers=headers, proxy=proxies)
