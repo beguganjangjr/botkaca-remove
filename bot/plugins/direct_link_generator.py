@@ -1,3 +1,5 @@
+import json
+import time
 import re
 import aiohttp
 import math, json
@@ -5,6 +7,7 @@ import urllib.parse
 import logging
 import lk21
 import string
+import random
 from bs4 import BeautifulSoup
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
