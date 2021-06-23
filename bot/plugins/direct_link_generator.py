@@ -142,7 +142,7 @@ async def direct_link_generator(url, session):
         else:
             return "**ERROR:** Cant't download, {}.".format(restext["value"])
           
-    elif 'mixdrop.co' in url or 'mixdrop.cx in url':
+    elif 'mixdrop.co' in url or 'mixdrop.sx' in url':
       web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
       media_id = web_url[1]
       host = web_url[0]
@@ -191,10 +191,7 @@ async def direct_link_generator(url, session):
         except IndexError:
             raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
                 
-    elif 'dood.la' in url \
-        or 'dood.so' in url \
-        or 'dood.cx' in url \
-        or 'dood.to' in url:
+    elif 'dood.la' in url or 'dood.so' in url or 'dood.cx' in url or 'dood.to' in url:
         web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
         media_id = web_url[1]
         host = web_url[0]
