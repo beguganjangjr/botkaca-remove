@@ -24,7 +24,6 @@ LOGGER = logging.getLogger(__name__)
 
 loop = asyncio.get_event_loop()
 
-
 def get_redirect_url(url, headers={}):
     request = urllib.request.Request(url, headers=headers)
     request.get_method = lambda: 'HEAD'
@@ -209,7 +208,7 @@ async def direct_link_generator(url, session):
         link.replace('/d/','/e/')
         proxies = 'http://{0}'.format(CONFIG.PROXY)
         async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None) as ses:
-            async with ses.get(url=link, headers=headers, proxy=proxies) as response:
+            async with ses.get(url=link, headers=headers, proxy=proxies, ssl=False) as response:
                 text = await response.text()
            
         #LOGGER.info(f'text: {text}')
@@ -218,7 +217,7 @@ async def direct_link_generator(url, session):
             token = match.group(2)
             url = 'https://{0}{1}'.format(host, match.group(1))
             async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None) as ses:
-                async with ses.get(url=url, headers=headers, proxy=proxies) as response:
+                async with ses.get(url=url, headers=headers, proxy=proxies, ssl=False) as response:
                     html = await response.text()
                 #response = await ses.get(url=url, headers=headers, proxy=proxies)
                 #html = await response.text()
