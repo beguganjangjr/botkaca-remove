@@ -138,4 +138,4 @@ STATUS = type('obj', (object,), {
     'DEFAULT_TRACKER' : CONFIG.TORRENT_TRACKER.split(','),
     'CHAT_ID' : CONFIG.CHAT_ID.split(',')
 })
-SESSION = aiohttp.ClientSession()
+session = aiohttp.ClientSession()
