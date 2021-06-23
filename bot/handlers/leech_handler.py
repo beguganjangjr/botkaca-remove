@@ -134,7 +134,7 @@ async def func(client : Client, message: Message):
     await asyncio_sleep(1)
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
-    #proxy = '178.128.208.252:8080'
+    proxy = '61.5.103.20:8080'
  
     try:
         if is_magnet(link):
