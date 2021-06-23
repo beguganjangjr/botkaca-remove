@@ -57,6 +57,7 @@ async def func(client : Client, message: Message):
     mesg = message.text.split('\n')
     message_args = mesg[0].split(' ')
     name_args = mesg[0].split('|')
+    proxy_args = mesg[0].split(',')
     try:
         link = message_args[1]
         print(link)
@@ -69,14 +70,23 @@ async def func(client : Client, message: Message):
         name = name.strip()
         if name.startswith("pswd: "):
             name = ''
+        elif ',' in name:
+            name = name.split(',')
+            name = name[0].strip()
     except IndexError:
         name = ''
-    try:
-        proxy = name_args[2]
-        proxy = proxy.strip()
-        
-    except:
-        proxy = ''      
+    if 'dood.to' in link \
+        or 'dood.la' in link \
+        or 'dood.cx' in link \
+        or 'dood.so' in link \
+        or 'dood.watch' in link \
+        or 'doodstream.com' in link:
+        try:
+            proxy = proxy_args[1]
+            proxy = proxy.strip()
+            
+        except IndexError:
+            proxy = ''   
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
@@ -118,7 +128,7 @@ async def func(client : Client, message: Message):
         return
     
     try:
-        link = await direct_link_generator(link)
+        link = await direct_link_generator(link, proxy)
         LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
@@ -136,8 +146,8 @@ async def func(client : Client, message: Message):
     await asyncio_sleep(1)
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
-    proxy = 'http://{0}'.format(CONFIG.PROXY)
- 
+    #proxy = 'http://{0}'.format(CONFIG.PROXY)
+    proxy = 'http://{0}'.format(proxy)
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
