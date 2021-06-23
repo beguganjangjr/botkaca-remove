@@ -210,7 +210,7 @@ async def direct_link_generator(url, session):
             async with ses.get(url=link, headers=headers, proxy=proxies) as response:
                 text = await response.text()
            
-        LOGGER.info(f'text: {text}')
+        #LOGGER.info(f'text: {text}')
         match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
         if match:
             token = match.group(2)
