@@ -207,20 +207,22 @@ async def direct_link_generator(url, session):
         link.replace('/d/','/e/')
         proxies = 'http://165.22.109.60:8080'
         async with aiohttp.ClientSession() as ses:
-            response = await ses.get(url=link, headers=headers, proxy=proxies)
-            text = await response.text()
-            
+            async with ses.get(url=link, headers=headers, proxy=proxies) as reponse:
+                text = await response.text()
+           
         LOGGER.info(f'text: {text}')
         match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
         if match:
             token = match.group(2)
             url = 'https://{0}{1}'.format(host, match.group(1))
             async with aiohttp.ClientSession() as ses:
-                response = await ses.get(url=url, headers=headers, proxy=proxies)
-                html = await response.text()
-                dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
-                    #LOGGER.info(f'dl_url: {dl_url}')
-                return dl_url
+                async with ses.get(url=url, headers=headers, proxy=proxies) as reponse:
+                    html = await response.text()
+                #response = await ses.get(url=url, headers=headers, proxy=proxies)
+                #html = await response.text()
+            dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
+            LOGGER.info(f'dl_url: {dl_url}')
+            return dl_url
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
                     
             
