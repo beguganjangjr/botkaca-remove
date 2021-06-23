@@ -142,7 +142,7 @@ async def direct_link_generator(url, session):
         else:
             return "**ERROR:** Cant't download, {}.".format(restext["value"])
           
-    elif 'mixdrop.co' in url or 'mixdrop.sx' in url':
+    elif 'mixdrop.co' in url or 'mixdrop.sx' in url:
       web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
       media_id = web_url[1]
       host = web_url[0]
