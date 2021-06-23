@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
 from getuseragent import UserAgent
-
+from bot import CONFIG
 try:
     from urllib.parse import urlencode
 except ImportError:
