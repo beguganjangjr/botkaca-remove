@@ -210,7 +210,7 @@ async def direct_link_generator(url, session):
             token = match.group(2)
             url = 'https://{0}{1}'.format(host, match.group(1))
             async with session as ses:
-                async with ses.get(url=url, headers=headers, proxy=proxies) as response:
+                async with ses.get(url=url, headers=headers) as response:
                     html = await response.text()
             dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
             return dl_url    
