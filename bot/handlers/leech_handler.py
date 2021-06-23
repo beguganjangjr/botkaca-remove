@@ -75,19 +75,12 @@ async def func(client : Client, message: Message):
             name = name[0].strip()
     except IndexError:
         name = ''
-    proxy = ''    
-    if 'dood.to' in link \
-        or 'dood.la' in link \
-        or 'dood.cx' in link \
-        or 'dood.so' in link \
-        or 'dood.watch' in link \
-        or 'doodstream.com' in link:
-        try:
-            proxy = proxy_args[1]
-            proxy = proxy.strip()
-            
-        except IndexError:
-            proxy = ''   
+    try:
+        proxy = proxy_args[1]
+        proxy = proxy.strip()
+          
+    except IndexError:
+        proxy = ''   
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
@@ -101,6 +94,14 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
+    if 'dood.to' in link \
+        or 'dood.la' in link \
+        or 'dood.cx' in link \
+        or 'dood.so' in link \
+        or 'dood.watch' in link \
+        or 'doodstream.com' in link:
+        proxy = 'http://{0}'.format(proxy)
+        
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -148,7 +149,7 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
     #proxy = 'http://{0}'.format(CONFIG.PROXY)
-    proxy = 'http://{0}'.format(proxy)
+    
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
