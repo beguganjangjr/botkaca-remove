@@ -4,10 +4,12 @@ import math, json
 import urllib.parse
 import logging
 import lk21
+import string
 from bs4 import BeautifulSoup
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
 from getuseragent import UserAgent
+
 try:
     from urllib.parse import urlencode
 except ImportError:
