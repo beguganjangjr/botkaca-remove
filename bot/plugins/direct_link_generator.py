@@ -14,7 +14,7 @@ except ImportError:
     from urllib import urlencode
 ua = UserAgent()
 ua = ua.Random()
-LOGGING = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 
@@ -79,7 +79,7 @@ async def direct_link_generator(url, session):
                 ourl = restext['href']
                 return ourl
         except:
-            LOGGING.exception("Ayee jooo")
+            LOGGER.exception("Ayee jooo")
             return "**ERROR:** Cant't download, the yadisk file not found or dowmload limit reached!" 
 
     #zippyshare.com
