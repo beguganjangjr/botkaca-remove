@@ -63,7 +63,7 @@ CONFIG = Config({
 
 # GOAL:
 # prepare workdir
-session = aiohttp.ClientSession()
+
 workdir = os.path.join(CONFIG.ROOT, CONFIG.WORKDIR)
 if not os.path.isdir(workdir):
     os.mkdir(workdir)
@@ -138,3 +138,4 @@ STATUS = type('obj', (object,), {
     'DEFAULT_TRACKER' : CONFIG.TORRENT_TRACKER.split(','),
     'CHAT_ID' : CONFIG.CHAT_ID.split(',')
 })
+SESSION = aiohttp.ClientSession()
