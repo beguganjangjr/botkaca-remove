@@ -156,7 +156,7 @@ async def direct_link_generator(url, session):
             d_content = await response.text()
 
             
-      LOGGER.info(f'd_content: {d_content}')  
+      #LOGGER.info(f'd_content: {d_content}')  
       r = re.search(r'location\s*=\s*"([^"]+)', d_content)
       if r:
         url = 'https://{0}{1}'.format(host, r.group(1))
@@ -171,7 +171,60 @@ async def direct_link_generator(url, session):
         return dl_url
       raise DirectDownloadLinkException("`Error: Can't extract the link`\n")        
       
-    
+    elif 'streamtape.com' in url:
+        try:
+            web_url = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
+            media_id = web_url[1]
+            host = web_url[0]
+            user_agent = ua
+            link = 'https://' + host + '/v/' + media_id
+            headers = {'User-Agent': user_agent,
+                       'Referer': 'https://{0}/'.format(host)}
+            async with session as ses:
+                async with ses.get(url=link, headers=headers) as response:
+                    d_content = await response.text()
+            src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
+            if src:
+                src_url = 'https:{0}{1}&stream=1'.format(src.group(1), src.group(2))
+                dl_url = get_redirect_url(src_url, headers) + append_headers(headers)
+                return dl_url
+        except IndexError:
+            raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+                
+    elif 'dood.la' in url \
+        or 'dood.so' in url \
+        or 'dood.cx' in url \
+        or 'dood.to' in url:
+        web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
+        media_id = web_url[1]
+        host = web_url[0]
+        link = 'https://' + host + '/e/' + media_id
+        user_agent = ua
+        headers = {'User-Agent': user_agent,
+                   'Referer': 'https://{0}/'.format(host)}
+        link.replace('/d/','/e/')
+        proxies = 'http://165.22.109.60:8080'
+        async with session as ses:
+            async with ses.get(url=link, headers=headers, proxy=proxies) as response:
+                text = await response.text()
+        LOGGER.info(f'text: {text}')
+        match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
+        if match:
+            token = match.group(2)
+            url = 'https://{0}{1}'.format(host, match.group(1))
+            async with session as ses:
+                async with ses.get(url=url, headers=headers, proxy=proxies) as response:
+                    html = await response.text()
+            dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
+            return dl_url    
+        raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+                    
+            
+            
+        
+        
+        
+            
     
       
           
