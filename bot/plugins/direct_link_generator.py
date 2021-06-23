@@ -151,13 +151,12 @@ async def direct_link_generator(url, session):
       headers = {'Origin': 'https://{}'.format(host),
                  'Referer': 'https://{}/'.format(host),
                  'User-Agent': user_agent}
-      async with session(headers=headers) as ses:
+      async with session as ses:
         async with ses.get(url=link, headers=headers) as response:
             d_content = await response.text()
-        #reponse = await ses.get(link, headers=headers)
-        #resp = await response.read()
-        #d_content = await response.text()
-        
+
+            
+      LOGGER.info(f'd_content: {d_content}')  
       r = re.search(r'location\s*=\s*"([^"]+)', d_content)
       if r:
         url = 'https://{0}{1}'.format(host, r.group(1))
