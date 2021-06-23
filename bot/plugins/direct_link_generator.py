@@ -208,7 +208,7 @@ async def direct_link_generator(url, session):
                    'Referer': 'https://{0}/'.format(host)}
         link.replace('/d/','/e/')
         proxies = 'http://{0}'.format(CONFIG.PROXY)
-        async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None):
+        async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None) as ses:
             async with ses.get(url=link, headers=headers, proxy=proxies) as response:
                 text = await response.text()
            
