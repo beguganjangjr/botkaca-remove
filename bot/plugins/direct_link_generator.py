@@ -152,36 +152,41 @@ async def direct_link_generator(url, proxy):
             return "**ERROR:** Cant't download, {}.".format(restext["value"])
           
     elif 'mixdrop.co' in url or 'mixdrop.sx' in url:
-      web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
-      media_id = web_url[1]
-      host = web_url[0]
-      link = 'https://' + host + '/e/' + media_id
-      user_agent = ua
-      headers = {'Origin': 'https://{}'.format(host),
-                 'Referer': 'https://{}/'.format(host),
-                 'User-Agent': user_agent}
-      async with aiohttp.ClientSession() as ses:
-        async with ses.get(url=link, headers=headers) as response:
-            d_content = await response.text()
-
-            
-      #LOGGER.info(f'd_content: {d_content}')  
-      r = re.search(r'location\s*=\s*"([^"]+)', d_content)
-      if r:
-        url = 'https://{0}{1}'.format(host, r.group(1))
-        async with aiohttp.ClientSession() as session:
-            async with session.get(link, headers=headers) as response:
+        web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
+        media_id = web_url[1]
+        host = web_url[0]
+        link = 'https://' + host + '/e/' + media_id
+        user_agent = ua
+        headers = {'Origin': 'https://{}'.format(host),
+                   'Referer': 'https://{}/'.format(host),
+                   'User-Agent': user_agent}
+        
+        session_timeout = aiohttp.ClientTimeout(total=None)
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(url=link, headers=headers) as response:
                 d_content = await response.text()
-      if '(p,a,c,k,e,d)' in d_content:
-        d_content = get_packed_data(d_content)
-      r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
-      if r:
-        headers = {'User-Agent': user_agent, 'Referer': link}
-        dl_url = "https:" + r.group(1) + append_headers(headers)
-        return dl_url
-      raise DirectDownloadLinkException("`Error: Can't extract the link`\n")        
+
+          
+      #LOGGER.info(f'd_content: {d_content}')  
+      
+        r = re.search(r'location\s*=\s*"([^"]+)', d_content)
+        if r:
+            url = 'https://{0}{1}'.format(host, r.group(1))
+            async with aiohttp.ClientSession() as session:
+                async with session.get(link, headers=headers) as response:
+                    d_content = await response.text()
+                    
+        if '(p,a,c,k,e,d)' in d_content:
+            d_content = get_packed_data(d_content)
+            r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
+        if r:
+            headers = {'User-Agent': user_agent, 'Referer': link}
+            dl_url = "https:" + r.group(1) + append_headers(headers)
+            return dl_url
+        raise DirectDownloadLinkException("`Error: Can't extract the link`\n")        
       
     elif 'streamtape.com' in url:
+        
         try:
             web_url = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
             media_id = web_url[1]
@@ -190,8 +195,9 @@ async def direct_link_generator(url, proxy):
             link = 'https://' + host + '/v/' + media_id
             headers = {'User-Agent': user_agent,
                        'Referer': 'https://{0}/'.format(host)}
-            async with aiohttp.ClientSession() as ses:
-                async with ses.get(url=link, headers=headers) as response:
+            session_timeout = aiohttp.ClientTimeout(total=None)
+            async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+                async with ses.get(url=link, headers=headers, timeout=None) as response:
                     d_content = await response.text()
             src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
             if src:
