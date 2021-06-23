@@ -75,6 +75,7 @@ async def func(client : Client, message: Message):
             name = name[0].strip()
     except IndexError:
         name = ''
+    proxy = ''    
     if 'dood.to' in link \
         or 'dood.la' in link \
         or 'dood.cx' in link \
