@@ -162,23 +162,23 @@ async def direct_link_generator(url, proxy):
                    'User-Agent': user_agent}
         
         session_timeout = aiohttp.ClientTimeout(total=None)
-        async with aiohttp.ClientSession() as ses:
-            async with ses.get(url=link, headers=headers) as response:
+        async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+            async with ses.get(url=link, headers=headers, timeout=None) as response:
                 d_content = await response.text()
 
           
-      #LOGGER.info(f'd_content: {d_content}')  
+        #LOGGER.info(f'd_content: {d_content}')  
       
         r = re.search(r'location\s*=\s*"([^"]+)', d_content)
         if r:
             url = 'https://{0}{1}'.format(host, r.group(1))
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession() as ses:
                 async with session.get(link, headers=headers) as response:
                     d_content = await response.text()
                     
         if '(p,a,c,k,e,d)' in d_content:
             d_content = get_packed_data(d_content)
-            r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
+        r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
         if r:
             headers = {'User-Agent': user_agent, 'Referer': link}
             dl_url = "https:" + r.group(1) + append_headers(headers)
