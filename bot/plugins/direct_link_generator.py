@@ -9,6 +9,8 @@ import lk21
 import string
 import random
 import asyncio
+import ssl
+import certifi
 from bs4 import BeautifulSoup
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
@@ -23,6 +25,7 @@ ua = ua.Random()
 LOGGER = logging.getLogger(__name__)
 
 loop = asyncio.get_event_loop()
+sslcontext = ssl.create_default_context(cafile=certifi.where())
 
 def get_redirect_url(url, headers={}):
     request = urllib.request.Request(url, headers=headers)
@@ -208,7 +211,7 @@ async def direct_link_generator(url, session):
         link.replace('/d/','/e/')
         proxies = 'http://{0}'.format(CONFIG.PROXY)
         async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None) as ses:
-            async with ses.get(url=link, headers=headers, proxy=proxies, ssl=False) as response:
+            async with ses.get(url=link, headers=headers, proxy=proxies, ssl=sslcontext) as response:
                 text = await response.text()
            
         #LOGGER.info(f'text: {text}')
@@ -217,7 +220,7 @@ async def direct_link_generator(url, session):
             token = match.group(2)
             url = 'https://{0}{1}'.format(host, match.group(1))
             async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None) as ses:
-                async with ses.get(url=url, headers=headers, proxy=proxies, ssl=False) as response:
+                async with ses.get(url=url, headers=headers, proxy=proxies, ssl=sslcontext) as response:
                     html = await response.text()
                 #response = await ses.get(url=url, headers=headers, proxy=proxies)
                 #html = await response.text()
