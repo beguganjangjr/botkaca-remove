@@ -217,7 +217,7 @@ async def direct_link_generator(url, session):
                 async with ses.get(url=url, headers=headers, proxy=proxies) as response:
                     html = await response.text()
                     dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
-                    LOGGER.info(f'dl_url: {dl_url}')
+                    #LOGGER.info(f'dl_url: {dl_url}')
                     return dl_url
             raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
                     
