@@ -8,6 +8,7 @@ import logging
 import lk21
 import string
 import random
+import asyncio
 from bs4 import BeautifulSoup
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
@@ -21,6 +22,7 @@ ua = UserAgent()
 ua = ua.Random()
 LOGGER = logging.getLogger(__name__)
 
+loop = asyncio.get_event_loop()
 
 
 def get_redirect_url(url, headers={}):
@@ -206,7 +208,7 @@ async def direct_link_generator(url, session):
                    'Referer': 'https://{0}/'.format(host)}
         link.replace('/d/','/e/')
         proxies = 'http://{0}'.format(CONFIG.PROXY)
-        async with aiohttp.ClientSession() as ses:
+        async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None)
             async with ses.get(url=link, headers=headers, proxy=proxies) as response:
                 text = await response.text()
            
@@ -215,7 +217,7 @@ async def direct_link_generator(url, session):
         if match:
             token = match.group(2)
             url = 'https://{0}{1}'.format(host, match.group(1))
-            async with aiohttp.ClientSession() as ses:
+            async with aiohttp.ClientSession(trust_env=True, loop=loop, read_timeout=None) as ses:
                 async with ses.get(url=url, headers=headers, proxy=proxies) as response:
                     html = await response.text()
                 #response = await ses.get(url=url, headers=headers, proxy=proxies)
