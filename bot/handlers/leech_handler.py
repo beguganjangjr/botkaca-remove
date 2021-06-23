@@ -116,7 +116,7 @@ async def func(client : Client, message: Message):
         await message.reply_text('No download source provided')
         return
     try:
-        link = await direct_link_generator(link, session, proxy)
+        link = await direct_link_generator(link, session)
         LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
