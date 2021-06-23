@@ -51,7 +51,7 @@ def append_headers(headers):
     headers = '|%s' % '&'.join(['%s=%s' % (key, urllib.parse.quote_plus(headers[key])) for key in headers])
     return headers
 
-async def direct_link_generator(url):
+async def direct_link_generator(url, proxy):
     #blocklinks
     if 'mega.nz' in url or 'drive.google.com' in url or 'uptobox.com' in url \
     or '1fiecher.com' in url or 'googleusercontent.com' in url:
@@ -209,7 +209,7 @@ async def direct_link_generator(url):
         headers = {'User-Agent': user_agent,
                    'Referer': 'https://{0}/'.format(host)}
         link.replace('/d/','/e/')
-        proxies = 'http://{0}'.format(CONFIG.PROXY)
+        proxies = 'http://{0}'.format(proxy)
         session_timeout = aiohttp.ClientTimeout(total=None)
         async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
             async with ses.get(url=link, headers=headers, proxy=proxies, timeout=None) as response:
