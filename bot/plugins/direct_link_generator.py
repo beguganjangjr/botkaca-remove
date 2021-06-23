@@ -204,6 +204,8 @@ async def direct_link_generator(url, session):
         async with session as ses:
             async with ses.get(url=link, headers=headers, proxy=proxies) as response:
                 text = await response.text()
+                return text
+            
         LOGGER.info(f'text: {text}')
         match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
         if match:
