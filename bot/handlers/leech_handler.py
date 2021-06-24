@@ -169,7 +169,7 @@ async def func(client : Client, message: Message):
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
                  'all-proxy': proxy,
-                 'referer': ,
+                 'referer': referer,
                  'check-certificate': False,
                  'http-no-cache': _cache,
                  'follow-torrent': False,
