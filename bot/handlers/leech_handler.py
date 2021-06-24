@@ -97,6 +97,7 @@ async def func(client : Client, message: Message):
 
     timeout = 60
     _cache = False
+    referer = None
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -135,6 +136,7 @@ async def func(client : Client, message: Message):
         proxy = 'http://{0}'.format(proxy)
         timeout = 300
         _cache = True
+        referer = '*'
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
@@ -167,7 +169,7 @@ async def func(client : Client, message: Message):
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
                  'all-proxy': proxy,
-                 #'referer': '*',
+                 'referer': ,
                  'check-certificate': False,
                  'http-no-cache': _cache,
                  'follow-torrent': False,
