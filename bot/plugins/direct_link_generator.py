@@ -163,7 +163,7 @@ async def direct_link_generator(url, proxy):
                    'User-Agent': user_agent}
         
         session_timeout = aiohttp.ClientTimeout(total=None)
-         async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+        async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
             async with ses.get(url=link, headers=headers, timeout=None) as response:
                 d_content = await response.text()
 
