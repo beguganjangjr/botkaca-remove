@@ -129,11 +129,11 @@ async def func(client : Client, message: Message):
         await message.reply_text('No download source provided')
         return
     
-    try:
-        link = await direct_link_generator(link, proxy)
-        LOGGER.info(link)
-    except DirectDownloadLinkException as e:
-        LOGGER.info(f'{link}: {e}')
+    #try:
+    #    link = await direct_link_generator(link, proxy)
+    #    LOGGER.info(link)
+    #except DirectDownloadLinkException as e:
+    #    LOGGER.info(f'{link}: {e}')
     
     #await asyncio_sleep(1)   
     
@@ -148,7 +148,7 @@ async def func(client : Client, message: Message):
     await asyncio_sleep(1)
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
-    #proxy = 'http://{0}'.format(CONFIG.PROXY)
+    proxy = 'http://{0}'.format(proxy)
     
     try:
         if is_magnet(link):
