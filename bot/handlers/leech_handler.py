@@ -147,7 +147,7 @@ async def func(client : Client, message: Message):
     #proxy = 'http://{0}'.format(proxy)
     timeout = 300
     if CONFIG.PROXY is not None:
-        proxy = 'http://{0}'.format(proxy)   
+        proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
     try:
         if is_magnet(link):
