@@ -155,7 +155,7 @@ async def direct_link_generator(url, proxy):
         web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
         media_id = web_url[1]
         host = web_url[0]
-        #link = link.replace('/f/','/e/')
+        link = link.replace('/f/','/e/')
         user_agent = ua.Random()
         headers = {'Origin': 'https://{}'.format(host),
                    'Referer': 'https://{}/'.format(host),
@@ -201,7 +201,8 @@ async def direct_link_generator(url, proxy):
         LOGGER.info(f'r_search2: {r.group(1)}')
         if r:
             headers = {'User-Agent': user_agent, 'Referer': link}
-            dl_url = "https:" + r.group(1) + append_headers(headers)
+            #dl_url = "https:" + r.group(1) + append_headers(headers)
+            dl_url = "https:" + r.group(1)
             return dl_url
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")        
       
