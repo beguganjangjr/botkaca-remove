@@ -96,7 +96,7 @@ async def func(client : Client, message: Message):
       pswd = " ".join(pswd)
 
     timeout = 60
-    http-no-cache = ''
+    _cache = False
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -134,7 +134,7 @@ async def func(client : Client, message: Message):
     if 'dood.video' in link:
         proxy = 'http://{0}'.format(proxy)
         timeout = 300
-        http-no-cache = True
+        _cache = True
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
@@ -169,7 +169,7 @@ async def func(client : Client, message: Message):
                  'all-proxy': proxy,
                  #'referer': '*',
                  'check-certificate': False,
-                 'http-no-cache': http-no-cache,
+                 'http-no-cache': _cache,
                  'follow-torrent': False,
                  #'timeout': timeout,
                  'connect-timeout': timeout,
