@@ -150,22 +150,36 @@ async def direct_link_generator(url, proxy):
           
     elif 'mixdrop.co' in url or 'mixdrop.sx' in url:
         try:
-            link = re.findall(r'\bhttps?://.*mixdrop\.(?:co|to|sx)\S+', url)[0]
+            link = re.findall(r'\bhttps?://.*mixdrop\.(?:co|to|sx)/(?:f|e)\S+', url)[0]
         except IndexError:
             raise DirectDownloadLinkException("`No streamtape links found`\n")
         web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
         media_id = web_url[1]
         host = web_url[0]
-        #link.replace('/f/','/e/')
+        link = link.replace('/f/','/e/')
         user_agent = ua
         headers = {'Origin': 'https://{}'.format(host),
                    'Referer': 'https://{}/'.format(host),
                    'User-Agent': user_agent}
         
         session_timeout = aiohttp.ClientTimeout(total=None)
-        async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
-            async with ses.get(url=link, headers=headers, timeout=None) as response:
-                d_content = await response.text()
+        try:
+            async with aiohttp.ClientSession() as ses:
+                async with ses.get(url=link, headers=headers) as response:
+                    if response.status != 200:
+                        LOGGER.error(f'Response status: {response.status}')
+                    else:
+                        d_content = await response.text()
+                        
+        except aiohttp.client_exceptions.ClientConnectorError as e:               
+            LOGGER.error(f'Cannot connect to mixdrop: {e})
+            return
+        except aiohttp.ContentTypeError:
+            LOGGER.error('decode failed')
+            return
+                         
+        
+            
 
           
         #LOGGER.info(f'd_content: {d_content}')  
@@ -173,9 +187,12 @@ async def direct_link_generator(url, proxy):
         r = re.search(r'location\s*=\s*"([^"]+)', d_content)
         if r:
             link = 'https://{0}{1}'.format(host, r.group(1))
-            async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
-                async with ses.get(url=link, headers=headers, timeout=None) as response:
-                    d_content = await response.text()
+            async with aiohttp.ClientSession() as ses:
+                async with ses.get(url=link, headers=headers) as response:
+                    if response.status != 200:
+                        LOGGER.error(f'Response status: {response.status}')
+                    else:
+                         d_content = await response.text()
                     
         if '(p,a,c,k,e,d)' in d_content:
             d_content = get_packed_data(d_content)
