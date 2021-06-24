@@ -123,11 +123,11 @@ async def func(client : Client, message: Message):
         await message.reply_text('No download source provided')
         return
     
-    #try:
-    #    link = await direct_link_generator(link, proxy)
-    #    LOGGER.info(link)
-    #except DirectDownloadLinkException as e:
-    #    LOGGER.info(f'{link}: {e}')
+    try:
+        link = await direct_link_generator(link, proxy)
+        LOGGER.info(link)
+    except DirectDownloadLinkException as e:
+        LOGGER.info(f'{link}: {e}')
     
     #await asyncio_sleep(1)   
     if 'dood.video' in link:
