@@ -130,10 +130,10 @@ async def func(client : Client, message: Message):
         LOGGER.info(f'{link}: {e}')
     
     #await asyncio_sleep(1)   
-    if 'dood.video' in link:
+    if 'dood.video' in link or 'mixdrop' in link:
         proxy = 'http://{0}'.format(proxy)
-    elif CONFIG.PROXY is not None:
-        proxy = 'http://{0}'.format(CONFIG.PROXY)   
+    #elif CONFIG.PROXY is not None:
+        #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
     STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
