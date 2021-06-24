@@ -155,7 +155,7 @@ async def direct_link_generator(url, proxy):
         web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
         media_id = web_url[1]
         host = web_url[0]
-        link = link.replace('/f/','/e/')
+        #link = link.replace('/f/','/e/')
         user_agent = ua.Random()
         headers = {'Origin': 'https://{}'.format(host),
                    'Referer': 'https://{}/'.format(host),
@@ -184,7 +184,7 @@ async def direct_link_generator(url, proxy):
         #LOGGER.info(f'd_content: {d_content}')  
       
         r = re.search(r'location\s*=\s*"([^"]+)', d_content)
-        LOGGER.info(f'r_search 1: {r}')
+       #LOGGER.info(f'r_search 1: {r}')
         if r:
             link = 'https://{0}{1}'.format(host, r.group(1))
             async with aiohttp.ClientSession() as ses:
@@ -198,7 +198,7 @@ async def direct_link_generator(url, proxy):
             d_content = get_packed_data(d_content)
             
         r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
-        LOGGER.info(f'r_search2: {r}')
+        LOGGER.info(f'r_search2: {r.group(1)}')
         if r:
             headers = {'User-Agent': user_agent, 'Referer': link}
             dl_url = "https:" + r.group(1) + append_headers(headers)
