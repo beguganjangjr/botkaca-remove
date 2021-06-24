@@ -160,12 +160,12 @@ async def direct_link_generator(url, proxy):
         headers = {'Origin': 'https://{}'.format(host),
                    'Referer': 'https://{}/'.format(host),
                    'User-Agent': user_agent}
-        proxies = 'http://{0}'.format(proxy)
+        #proxies = 'http://{0}'.format(proxy)
         session_timeout = aiohttp.ClientTimeout(total=None)
         try:
             #async with aiohttp.ClientSession() as ses:
-            async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
-                async with ses.get(url=link, headers=headers, proxy=proxies, timeout=None) as response:
+            async with aiohttp.ClientSession() as ses:
+                async with ses.get(url=link, headers=headers, timeout=None) as response:
                 #async with ses.get(url=link, headers=headers) as response:
                     if response.status != 200:
                         LOGGER.error(f'Response status: {response.status}')
@@ -243,9 +243,21 @@ async def direct_link_generator(url, proxy):
         link.replace('/d/','/e/')
         proxies = 'http://{0}'.format(proxy)
         session_timeout = aiohttp.ClientTimeout(total=None)
-        async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
-            async with ses.get(url=link, headers=headers, proxy=proxies, timeout=None) as response:
-                text = await response.text()
+        try:
+            async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+                async with ses.get(url=link, headers=headers, proxy=proxies, timeout=None) as response:
+                    if response.status != 200:
+                        LOGGER.error(f'Response status: {response.status}')
+                    else:
+                        text = await response.text()
+        except aiohttp.client_exceptions.ClientConnectorError as e:               
+            LOGGER.error(f'Cannot connect to mixdrop: {e}')
+            return "**ERROR**"
+        
+        except aiohttp.ContentTypeError:
+            LOGGER.error('decode failed')
+            return "**ERROR**"        
+            
            
         #LOGGER.info(f'text: {text}')
         match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
