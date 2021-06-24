@@ -130,7 +130,7 @@ async def func(client : Client, message: Message):
         LOGGER.info(f'{link}: {e}')
     
     #await asyncio_sleep(1)   
-    if 'dood.video' in link or 'mixdrop' in link:
+    if 'dood.video' in link:
         proxy = 'http://{0}'.format(proxy)
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
