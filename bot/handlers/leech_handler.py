@@ -95,7 +95,8 @@ async def func(client : Client, message: Message):
       pswd = pswd.groups()
       pswd = " ".join(pswd)
 
-        
+    timeout = 60
+    http-no-cache = ''
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -132,6 +133,8 @@ async def func(client : Client, message: Message):
     #await asyncio_sleep(1)   
     if 'dood.video' in link:
         proxy = 'http://{0}'.format(proxy)
+        timeout = 300
+        http-no-cache = True
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
@@ -147,7 +150,7 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
     #proxy = 'http://{0}'.format(proxy)
-    timeout = 300
+    #timeout = 300
     
     try:
         if is_magnet(link):
@@ -165,11 +168,11 @@ async def func(client : Client, message: Message):
                  'continue_downloads' : True,
                  'all-proxy': proxy,
                  #'referer': '*',
-                 #'check-certificate': False,
-                 #'http-no-cache': True,
+                 'check-certificate': False,
+                 'http-no-cache': http-no-cache,
                  'follow-torrent': False,
-                 'timeout': timeout,
-                 #'connect-timeout': timeout,
+                 #'timeout': timeout,
+                 'connect-timeout': timeout,
                  'out': name}))
              
 
