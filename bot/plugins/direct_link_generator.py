@@ -19,7 +19,6 @@ try:
 except ImportError:
     from urllib import urlencode
 ua = UserAgent()
-ua = ua.Random()
 LOGGER = logging.getLogger(__name__)
 
 loop = asyncio.get_event_loop()
@@ -36,7 +35,6 @@ def get_packed_data(html):
     for match in re.finditer(r'(eval\s*\(function.*?)</script>', html, re.DOTALL | re.I):
         if jsunpack.detect(match.group(1)):
             packed_data += jsunpack.unpack(match.group(1))
-
     return packed_data
 
 def dood_decode(data):
@@ -157,7 +155,7 @@ async def direct_link_generator(url, proxy):
         media_id = web_url[1]
         host = web_url[0]
         link = link.replace('/f/','/e/')
-        user_agent = ua
+        user_agent = ua.Random()
         headers = {'Origin': 'https://{}'.format(host),
                    'Referer': 'https://{}/'.format(host),
                    'User-Agent': user_agent}
@@ -213,7 +211,7 @@ async def direct_link_generator(url, proxy):
         web_url = re.findall(r'(?://|\.)(streamtape\.com)/(?:e|v)/([0-9a-zA-Z]+)', link)[0]    
         media_id = web_url[1]
         host = web_url[0]
-        user_agent = ua
+        user_agent = ua.Random()
         #link = 'https://' + host + '/v/' + media_id
         headers = {'User-Agent': user_agent,
                    'Referer': 'https://{0}/'.format(host)}
@@ -233,7 +231,7 @@ async def direct_link_generator(url, proxy):
         media_id = web_url[1]
         host = web_url[0]
         link = 'https://' + host + '/e/' + media_id
-        user_agent = ua
+        user_agent = ua.Random()
         headers = {'User-Agent': user_agent,
                    'Referer': 'https://{0}/'.format(host)}
         link.replace('/d/','/e/')
