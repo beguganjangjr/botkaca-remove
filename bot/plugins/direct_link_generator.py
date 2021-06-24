@@ -160,7 +160,7 @@ async def direct_link_generator(url, proxy):
         headers = {'Origin': 'https://{}'.format(host),
                    'Referer': 'https://{}/'.format(host),
                    'User-Agent': user_agent}
-        
+        proxies = 'http://{0}'.format(proxy)
         session_timeout = aiohttp.ClientTimeout(total=None)
         try:
             #async with aiohttp.ClientSession() as ses:
