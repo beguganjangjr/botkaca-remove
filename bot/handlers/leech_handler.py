@@ -123,15 +123,15 @@ async def func(client : Client, message: Message):
         await message.reply_text('No download source provided')
         return
     
-    try:
-        link = await direct_link_generator(link, proxy)
-        LOGGER.info(link)
-    except DirectDownloadLinkException as e:
-        LOGGER.info(f'{link}: {e}')
+    #try:
+    #    link = await direct_link_generator(link, proxy)
+    #    LOGGER.info(link)
+    #except DirectDownloadLinkException as e:
+    #    LOGGER.info(f'{link}: {e}')
     
     #await asyncio_sleep(1)   
-    if 'dood.video' in link:
-        proxy = 'http://{0}'.format(proxy)
+    #if 'dood.video' in link:
+    #    proxy = 'http://{0}'.format(proxy)
 
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
     STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
