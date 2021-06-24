@@ -146,8 +146,8 @@ async def direct_link_generator(url, proxy):
         else:
             return "**ERROR:** Cant't download, {}.".format(restext["value"])
           
-    #elif 'mixdrop.co' in url or 'mixdrop.sx' in url:
-    elif 'popox.co' in url or 'popoxz.sx' in url:
+    elif 'mixdrop.co' in url or 'mixdrop.sx' in url:
+    #elif 'popox.co' in url or 'popoxz.sx' in url:
         try:
             link = re.findall(r'\bhttps?://.*mixdrop\.(?:co|to|sx)/(?:f|e)\S+', url)[0]
         except IndexError:
@@ -184,6 +184,7 @@ async def direct_link_generator(url, proxy):
         #LOGGER.info(f'd_content: {d_content}')  
       
         r = re.search(r'location\s*=\s*"([^"]+)', d_content)
+        LOGGER.info(f'r_search 1: {r}')
         if r:
             link = 'https://{0}{1}'.format(host, r.group(1))
             async with aiohttp.ClientSession() as ses:
@@ -197,6 +198,7 @@ async def direct_link_generator(url, proxy):
             d_content = get_packed_data(d_content)
             
         r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
+        LOGGER.info(f'r_search2: {r}')
         if r:
             headers = {'User-Agent': user_agent, 'Referer': link}
             dl_url = "https:" + r.group(1) + append_headers(headers)
