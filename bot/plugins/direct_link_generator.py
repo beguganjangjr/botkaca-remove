@@ -174,10 +174,10 @@ async def direct_link_generator(url, proxy):
                         
         except aiohttp.client_exceptions.ClientConnectorError as e:               
             LOGGER.error(f'Cannot connect to mixdrop: {e}')
-            return
+            return "**ERROR**"
         except aiohttp.ContentTypeError:
             LOGGER.error('decode failed')
-            return
+            return "**ERROR**"
                          
         
             
@@ -200,11 +200,11 @@ async def direct_link_generator(url, proxy):
             d_content = get_packed_data(d_content)
             
         r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
-        LOGGER.info(f'r_search2: {r.group(1)}')
+        #LOGGER.info(f'r_search2: {r.group(1)}')
         if r:
             headers = {'User-Agent': user_agent, 'Referer': link}
-            #dl_url = "https:" + r.group(1) + append_headers(headers)
-            dl_url = "https:" + r.group(1)
+            dl_url = "https:" + r.group(1) + append_headers(headers)
+            #dl_url = "https:" + r.group(1)
             return dl_url
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")        
       
