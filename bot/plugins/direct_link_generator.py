@@ -163,8 +163,10 @@ async def direct_link_generator(url, proxy):
         
         session_timeout = aiohttp.ClientTimeout(total=None)
         try:
-            async with aiohttp.ClientSession() as ses:
-                async with ses.get(url=link, headers=headers) as response:
+            #async with aiohttp.ClientSession() as ses:
+            async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+                async with ses.get(url=link, headers=headers, proxy=proxies, timeout=None) as response:
+                #async with ses.get(url=link, headers=headers) as response:
                     if response.status != 200:
                         LOGGER.error(f'Response status: {response.status}')
                     else:
