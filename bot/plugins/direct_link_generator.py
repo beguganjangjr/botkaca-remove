@@ -172,7 +172,7 @@ async def direct_link_generator(url, proxy):
                         d_content = await response.text()
                         
         except aiohttp.client_exceptions.ClientConnectorError as e:               
-            LOGGER.error(f'Cannot connect to mixdrop: {e})
+            LOGGER.error(f'Cannot connect to mixdrop: {e}')
             return
         except aiohttp.ContentTypeError:
             LOGGER.error('decode failed')
