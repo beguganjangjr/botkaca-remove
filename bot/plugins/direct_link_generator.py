@@ -180,7 +180,7 @@ async def direct_link_generator(url, proxy):
             
 
           
-        #LOGGER.info(f'd_content: {d_content}')  
+        LOGGER.info(f'd_content: {d_content}')  
       
         r = re.search(r'location\s*=\s*"([^"]+)', d_content)
         if r:
