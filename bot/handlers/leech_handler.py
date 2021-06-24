@@ -94,13 +94,7 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
-    if 'dood.to' in link \
-        or 'dood.la' in link \
-        or 'dood.cx' in link \
-        or 'dood.so' in link \
-        or 'dood.watch' in link \
-        or 'doodstream.com' in link:
-        proxy = 'http://{0}'.format(proxy)
+
         
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
@@ -136,7 +130,8 @@ async def func(client : Client, message: Message):
         LOGGER.info(f'{link}: {e}')
     
     #await asyncio_sleep(1)   
-    
+    if 'dood.video' in link:
+        proxy = 'http://{0}'.format(proxy)    
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
     STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
         config={
