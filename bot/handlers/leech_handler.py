@@ -70,6 +70,9 @@ async def func(client : Client, message: Message):
         name = name.strip()
         if name.startswith("pswd: "):
             name = ''
+        elif ',' in name:
+            name = name.split(',')
+            name = name[0].strip()
     except IndexError:
         name = ''
     try:
@@ -77,8 +80,7 @@ async def func(client : Client, message: Message):
         proxy = proxy.strip()
           
     except IndexError:
-        proxy = ''
-
+        proxy = ''   
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
@@ -92,24 +94,14 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
-    #if 'dood.video' in link \
-    #or 'dood.to' in link or 'dood.cx' in link \
-    #or 'dood.la' in link or 'dood.so' in link:
-    #    proxies = 'http://{0}'.format(proxy)
-    #    timeout = 300
-    #    _cache = True
-    #    referer = '*'
-    download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
-    STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
-        config={
-            'dir' : download_dir
-        }
-    )
-  
-    aria2_api = STATUS.ARIA2_API    
+
+    timeout = 60
+    _cache = False
+    referer = None
     LOGGER.info(link)
+    LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
-    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
+    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
         file = None
@@ -123,14 +115,14 @@ async def func(client : Client, message: Message):
         if not is_url(link) and not is_magnet(link) or len(link) == 0:
             if file is not None:
                 if file.mime_type != "application/x-bittorrent":
-                    await reply.edit_text('No download source provided / No torrent file detected')
+                    await message.edit_text('No download source provided / No torrent file detected')
                     return
                 else:
                     link = await reply_to.download()
     else:
         tag = None
     if not is_url(link) and not is_magnet(link):
-        await reply.edit_text('No download source provided')
+        await message.edit_text('No download source provided')
         return
     
     try:
@@ -140,18 +132,32 @@ async def func(client : Client, message: Message):
         if "ERROR:" in str(e):
             await reply.edit_text(
                 str(e)
-            )       
+            )
             return
-        if "Youtube" in str(e):
-            await reply.edit_text(
-                str(e)
-            )    
-            return
-        
-
-    await aria2_api.start()        
-    LOGGER.debug(f'Leeching : {link}')
-    LOGGER.info(f'Leeching : {link}')
+            
+    #await asyncio_sleep(1)   
+    #if 'dood.video' in link:
+    #    proxy = 'http://{0}'.format(proxy)
+    #    timeout = 300
+    #    _cache = True
+    #    referer = '*'
+    #elif CONFIG.PROXY is not None:
+        #proxy = 'http://{0}'.format(CONFIG.PROXY)   
+    
+    download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
+    STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
+        config={
+            'dir' : download_dir
+            
+        }
+    )
+    aria2_api = STATUS.ARIA2_API
+    await asyncio_sleep(1)
+    await aria2_api.start()
+    LOGGER.debug(f'Leeching : {link}')    
+    #proxy = 'http://{0}'.format(proxy)
+    #timeout = 300
+    
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
@@ -166,7 +172,7 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 'all-proxy': proxies,
+                 'all-proxy': proxy,
                  'referer': referer,
                  'check-certificate': False,
                  'http-no-cache': _cache,
