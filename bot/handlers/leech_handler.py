@@ -70,16 +70,13 @@ async def func(client : Client, message: Message):
         name = name.strip()
         if name.startswith("pswd: "):
             name = ''
-        elif ',' in name:
-            name = name.split(',')
-            name = name[0].strip()
     except IndexError:
         name = ''
     try:
         proxy = proxy_args[1]
         proxy = proxy.strip()
     except IndexError:
-        proxy = ''   
+        proxy = ''
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
@@ -89,7 +86,7 @@ async def func(client : Client, message: Message):
     if ussr != '' and pssw != '':
         link = link.split("://", maxsplit=1)
         link = f'{link[0]}://{ussr}:{pssw}@{link[1]}'
-    pswd = re.search('(?<=pswd: )(.*)', message.text)
+    pswd = re.search('(?<=pswd: )(.*)', update.message.text)
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
@@ -139,6 +136,8 @@ async def func(client : Client, message: Message):
                 str(e)
             )
             return
+    except:
+        return
     
     #await asyncio_sleep(1)   
 
