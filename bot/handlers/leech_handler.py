@@ -69,6 +69,9 @@ async def func(client : Client, message: Message):
             'dir' : download_dir
         }
     )
+
+
+    link = " ".join(args[1:])
     try:
         link = await direct_link_generator(link)
     except DirectDownloadLinkException as e:
@@ -82,10 +85,9 @@ async def func(client : Client, message: Message):
             await reply.edit_text(
                 str(e)
             )    
-            return    
+            return
     aria2_api = STATUS.ARIA2_API
-    await aria2_api.start()
-    link = " ".join(args[1:])
+    await aria2_api.start()        
     LOGGER.debug(f'Leeching : {link}')
     try:
         if is_magnet(link):
