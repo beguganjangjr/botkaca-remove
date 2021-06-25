@@ -95,9 +95,9 @@ async def func(client : Client, message: Message):
       pswd = pswd.groups()
       pswd = " ".join(pswd)
 
-    timeout = 60
-    _cache = False
-    referer = None
+    #timeout = 60
+    #_cache = False
+    #referer = None
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -172,13 +172,13 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 'all-proxy': proxy,
-                 'referer': referer,
+                 #'all-proxy': proxy,
+                 #'referer': referer,
                  'check-certificate': False,
-                 'http-no-cache': _cache,
+                 #'http-no-cache': _cache,
                  'follow-torrent': False,
                  #'timeout': timeout,
-                 'connect-timeout': timeout,
+                 #'connect-timeout': timeout,
                  'out': name}))
              
 
