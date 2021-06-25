@@ -74,6 +74,7 @@ async def direct_link_generator(url, proxy):
             link = re.findall(r'\bhttps?://.*hxfile\.co\S+', url)[0]
         except IndexError:
             raise DirectDownloadLinkException("`No Hxfile links found`\n")
+            return "**ERROR**"
         bypasser = lk21.Bypass()
         dl_url=bypasser.bypass_url(link)
         return dl_url
@@ -86,6 +87,7 @@ async def direct_link_generator(url, proxy):
             link = re.findall(r'\bhttps?://.*anonfiles\.com\S+', url)[0]
         except IndexError:
             raise DirectDownloadLinkException("`No Anonfiles links found`\n")
+            return "**ERROR**"
         try:
             bypasser = lk21.Bypass()
             dl_url=bypasser.bypass_url(link)
@@ -100,6 +102,7 @@ async def direct_link_generator(url, proxy):
             link = re.findall(r'\bhttps?://.*letsupload\.io\S+', url)[0]
         except IndexError:
             raise DirectDownloadLinkException("`No Letsupload links found`\n")
+            return "**ERROR**"
         try:
             bypasser = lk21.Bypass()
             dl_url=bypasser.bypass_url(link)
@@ -109,7 +112,7 @@ async def direct_link_generator(url, proxy):
         
             
     elif 'fembed.com' in url or 'femax20.com' in url or 'feurl.com' in url or 'naniplay.nanime.in' in url \
-        or 'naniplay.nanime.biz' in url or 'naniplay.com' in url or 'layarkacaxxi.icu' in url:
+    or 'naniplay.nanime.biz' in url or 'naniplay.com' in url or 'layarkacaxxi.icu' in url:
         link = url
         try:
             bypasser = lk21.Bypass()
@@ -221,7 +224,7 @@ async def direct_link_generator(url, proxy):
             return "**ERROR:** Cant't download, {}.".format(restext["value"])
           
     elif 'mixdrop.co' in url or 'mixdrop.sx' in url:
-    #elif 'popox.co' in url or 'popoxz.sx' in url:
+        dl_url = ''
         try:
             link = re.findall(r'\bhttps?://.*mixdrop\.(?:co|to|sx)/(?:f|e)\S+', url)[0]
         except IndexError:
@@ -280,10 +283,11 @@ async def direct_link_generator(url, proxy):
             dl_url = "https:" + r.group(1) + append_headers(headers)
             #dl_url = "https:" + r.group(1)
             return dl_url
-        raise DirectDownloadLinkException("`Error: Can't extract the link`\n")        
+        raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+        return "**ERROR**"
       
     elif 'streamtape.com' in url:
-               
+        dl_url= ''       
         try:
             link = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
         except IndexError:
@@ -305,6 +309,7 @@ async def direct_link_generator(url, proxy):
             dl_url = get_redirect_url(src_url, headers) + append_headers(headers)
             return dl_url
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+        return "**ERROR**"
                 
     elif 'dood.la' in url or 'dood.so' in url or 'dood.cx' in url or 'dood.to' in url:
         web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
@@ -347,6 +352,7 @@ async def direct_link_generator(url, proxy):
             LOGGER.info(f'dl_url: {dl_url}')
             return dl_url
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+        return "**ERROR**"
                     
             
             
