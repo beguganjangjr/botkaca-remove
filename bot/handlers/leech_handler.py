@@ -98,15 +98,6 @@ async def func(client : Client, message: Message):
     _cache = False
     referer = None
     proxies = ''
-    if 'dood.to' in link \
-        or 'dood.cx' in link \
-        or 'dood.la' in link \
-        or 'dood.so' in link:
-        proxies = 'http://{0}'.format(proxy)
-        timeout = 300
-        _cache = True
-        referer = '*'
-
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -154,7 +145,12 @@ async def func(client : Client, message: Message):
     LOGGER.debug(f'Leeching : {link}')    
     #proxy = 'http://{0}'.format(proxy)
     #timeout = 300
-    
+    if 'dood.video' in link:
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'
+        
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
