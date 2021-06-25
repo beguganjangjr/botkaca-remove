@@ -22,7 +22,7 @@ ua = UserAgent()
 LOGGER = logging.getLogger(__name__)
 
 loop = asyncio.get_event_loop()
-pattern = re.compile("\\d{1,3}(?:\\.\\d{1,3}){3}(?::\\d{1,5})?")
+
 
 def get_redirect_url(url, headers={}):
     request = urllib.request.Request(url, headers=headers)
@@ -47,7 +47,7 @@ def append_headers(headers):
     headers = '|%s' % '&'.join(['%s=%s' % (key, urllib.parse.quote_plus(headers[key])) for key in headers])
     return headers
 
-async def direct_link_generator(url):
+async def direct_link_generator(url: str):
     #blocklinks
     if 'mega.nz' in url or 'drive.google.com' in url or 'uptobox.com' in url \
     or '1fiecher.com' in url or 'googleusercontent.com' in url:
@@ -313,6 +313,7 @@ async def direct_link_generator(url):
         return "**ERROR**"
                 
     elif 'dood.la' in url or 'dood.so' in url or 'dood.cx' in url or 'dood.to' in url:
+        pattern = re.compile("\\d{1,3}(?:\\.\\d{1,3}){3}(?::\\d{1,5})?")
         web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
         proxy = re.findall(pattern, url)[0]
         media_id = web_url[1]
