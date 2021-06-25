@@ -80,7 +80,7 @@ async def func(client : Client, message: Message):
         proxy = proxy.strip()
           
     except IndexError:
-        proxy = None   
+        proxy = ''   
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
@@ -94,24 +94,15 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
-        
-    download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
-    STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
-        config={
-            'dir' : download_dir
-            
-        }
-    )
-    aria2_api = STATUS.ARIA2_API
+
     timeout = 60
     _cache = False
     referer = None
     LOGGER.info(link)
+    LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
-    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
+    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
-
-    
     if reply_to is not None:
         file = None
         tag = reply_to.from_user.username
@@ -124,42 +115,39 @@ async def func(client : Client, message: Message):
         if not is_url(link) and not is_magnet(link) or len(link) == 0:
             if file is not None:
                 if file.mime_type != "application/x-bittorrent":
-                    await message.reply_text('No download source provided / No torrent file detected')
+                    await message.edit_text('No download source provided / No torrent file detected')
                     return
                 else:
                     link = await reply_to.download()
     else:
         tag = None
-        
     if not is_url(link) and not is_magnet(link):
-        await message.reply_text('No download source provided')
+        await message.edit_text('No download source provided')
         return
     
     try:
-        link = await direct_link_generator(link)
+        link = await direct_link_generator(link, proxy)
+        LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
-        if "ERROR:" in str(e):
-            await reply.edit_text(
-                str(e)
-            )       
-            return
-        if "Youtube" in str(e):
-            await reply.edit_text(
-                str(e)
-            )    
-            return
     
     #await asyncio_sleep(1)   
-    #if 'dood.video' in link:
-    #    proxy = 'http://{0}'.format(proxy)
-    #    timeout = 300
-    #    _cache = True
-    #    referer = '*'
+    if 'dood.video' in link:
+        proxy = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
-
+    download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
+    STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
+        config={
+            'dir' : download_dir
+            
+        }
+    )
+    aria2_api = STATUS.ARIA2_API
     await asyncio_sleep(1)
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')    
@@ -180,7 +168,7 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 #'all-proxy': proxy,
+                 'all-proxy': proxy,
                  'referer': referer,
                  'check-certificate': False,
                  'http-no-cache': _cache,
