@@ -100,7 +100,7 @@ async def func(client : Client, message: Message):
         if not is_url(link) and not is_magnet(link) or len(link) == 0:
             if file is not None:
                 if file.mime_type != "application/x-bittorrent":
-                    await message.edit_text('No download source provided / No torrent file detected')
+                    await reply.edit_text('No download source provided / No torrent file detected')
                     return
                 else:
                     link = await reply_to.download()
@@ -122,10 +122,17 @@ async def func(client : Client, message: Message):
             await reply.edit_text(
                 str(e)
             )    
-            return    
+            return
+    download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
+    STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
+        config={
+            'dir' : download_dir
+        }
+    )    
     aria2_api = STATUS.ARIA2_API
     await aria2_api.start()        
     LOGGER.debug(f'Leeching : {link}')
+    LOGGER.info(f'Leeching : {link}')
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
