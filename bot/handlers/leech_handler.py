@@ -58,9 +58,6 @@ async def func(client : Client, message: Message):
     message_args = mesg[0].split(' ')
     name_args = mesg[0].split('|')
     proxy_args = mesg[0].split(',')
-    proxies = None
-    timeout = 60
-    referer = None
     try:
         link = message_args[1]
         print(link)
@@ -127,7 +124,7 @@ async def func(client : Client, message: Message):
     if not is_url(link) and not is_magnet(link):
         await reply.edit_text('No download source provided')
         return
- 
+    
     try:
         link = await direct_link_generator(link, proxy)
     except DirectDownloadLinkException as e:
@@ -142,6 +139,7 @@ async def func(client : Client, message: Message):
                 str(e)
             )    
             return
+        
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
     STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
         config={
