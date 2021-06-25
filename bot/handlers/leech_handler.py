@@ -86,7 +86,7 @@ async def func(client : Client, message: Message):
     if ussr != '' and pssw != '':
         link = link.split("://", maxsplit=1)
         link = f'{link[0]}://{ussr}:{pssw}@{link[1]}'
-    pswd = re.search('(?<=pswd: )(.*)', update.message.text)
+    pswd = re.search('(?<=pswd: )(.*)', message.text)
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
