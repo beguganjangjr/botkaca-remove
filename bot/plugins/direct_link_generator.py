@@ -66,7 +66,81 @@ async def direct_link_generator(url, proxy):
             return ourl
         except:
             return "**ERROR:** Cant't download, double check your mediafire link!"
-          
+    
+    
+    elif 'hxfile.co' in url:
+        dl_url = ''
+        try:
+            link = re.findall(r'\bhttps?://.*hxfile\.co\S+', url)[0]
+        except IndexError:
+            raise DirectDownloadLinkException("`No Hxfile links found`\n")
+        bypasser = lk21.Bypass()
+        dl_url=bypasser.bypass_url(link)
+        return dl_url
+    
+    
+    
+    elif 'anonfiles.com' in url:
+        dl_url = ''
+        try:
+            link = re.findall(r'\bhttps?://.*anonfiles\.com\S+', url)[0]
+        except IndexError:
+            raise DirectDownloadLinkException("`No Anonfiles links found`\n")
+        try:
+            bypasser = lk21.Bypass()
+            dl_url=bypasser.bypass_url(link)
+            return dl_url
+        except:
+            return "**ERROR:** Cant't download, double check your anonfiles link!"
+
+        
+     elif 'letsupload.io' in url:    
+        dl_url = ''
+        try:
+            link = re.findall(r'\bhttps?://.*letsupload\.io\S+', url)[0]
+        except IndexError:
+            raise DirectDownloadLinkException("`No Letsupload links found`\n")
+        try:
+            bypasser = lk21.Bypass()
+            dl_url=bypasser.bypass_url(link)
+            return dl_url
+        except:
+            return "**ERROR:** Cant't download, double check your anonfiles link!"
+        
+            
+    elif 'fembed.com' in url or 'femax20.com' in url or 'feurl.com' in url or 'naniplay.nanime.in' in url \
+        or 'naniplay.nanime.biz' in url or 'naniplay.com' in url or 'layarkacaxxi.icu' in url:
+        link = url
+        try:
+            bypasser = lk21.Bypass()
+            dl_url=bypasser.bypass_fembed(link)
+            lst_link = []
+            count = len(dl_url)
+            for i in dl_url:
+                lst_link.append(dl_url[i])
+            return lst_link[count-1]
+        except IndexError:
+            raise DirectDownloadLinkException("`No fembed / feurl  links found`\n")
+            return "**ERROR:** Link cannot be extracted, double check your link!"
+            
+                
+    elif 'sbembed.com' in url or 'streamsb.net' in url:
+        link = url
+        bypasser = lk21.Bypass()
+        try:
+            dl_url=bypasser.bypass_sbembed(link)
+            lst_link = []
+            count = len(dl_url)
+            for i in dl_url:
+                lst_link.append(dl_url[i])
+            return lst_link[count-1]
+        
+        except IndexError:
+            raise DirectDownloadLinkException("`No sbembed / streamsb.net links found`\n")
+            return "**ERROR:** Link cannot be extracted, double check your link!"
+            
+    
+    
     #disk.yandex.com    
     elif 'yadi.sk' in url or 'disk.yandex.com' in url:
         try:
