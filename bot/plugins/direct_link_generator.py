@@ -32,7 +32,7 @@ async def direct_link_generator(link: str):
     if not link:
         raise DirectDownloadLinkException("`No links found!`")
     elif 'youtube.com' in link or 'youtu.be' in link:
-        raise DirectDownloadLinkException("Unsupported yet YT-DL)
+        raise DirectDownloadLinkException("Unsupported yet YT-DL")
     elif 'zippyshare.com' in link:
         return zippy_share(link)
     elif 'yadi.sk' in link:
