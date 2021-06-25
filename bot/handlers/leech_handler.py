@@ -94,10 +94,10 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
+
     timeout = 60
     _cache = False
     referer = None
-    proxies = ''
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -124,21 +124,21 @@ async def func(client : Client, message: Message):
     if not is_url(link) and not is_magnet(link):
         await message.reply_text('No download source provided')
         return
-    #if 'dood.to' in link \
-    #    or 'dood.la' in link \
-    #    or 'dood.cx' in link \
-    #    or 'dood.so' in link:
-    #    proxies = 'http://{0}'.format(proxy)
-    #    timeout = 300
-    #    _cache = True
-    #    referer = '*'
-        
+    
     try:
         link = await direct_link_generator(link, proxy)
         LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
-
+    
+    #await asyncio_sleep(1)   
+    if 'dood.video' in link:
+        proxy = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'
+    #elif CONFIG.PROXY is not None:
+        #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
     STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
@@ -153,8 +153,7 @@ async def func(client : Client, message: Message):
     LOGGER.debug(f'Leeching : {link}')    
     #proxy = 'http://{0}'.format(proxy)
     #timeout = 300
-
-        
+    
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
@@ -169,7 +168,7 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 'all-proxy': proxies,
+                 'all-proxy': proxy,
                  'referer': referer,
                  'check-certificate': False,
                  'http-no-cache': _cache,
