@@ -57,6 +57,7 @@ async def func(client : Client, message: Message):
     mesg = message.text.split('\n')
     message_args = mesg[0].split(' ')
     name_args = mesg[0].split('|')
+    proxy_args = mesg[0].split(',')
     try:
         link = message_args[1]
         print(link)
@@ -72,6 +73,13 @@ async def func(client : Client, message: Message):
     except IndexError:
         name = ''
     try:
+        proxy = proxy_args[1]
+        proxy = proxy.strip()
+          
+    except IndexError:
+        proxy = None
+
+    try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
     except:
@@ -84,6 +92,10 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
+    timeout = 60
+    _cache = False
+    referer = None
+    proxies = None
     LOGGER.info(link)
     link = link.strip()
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
@@ -110,7 +122,7 @@ async def func(client : Client, message: Message):
         await reply.edit_text('No download source provided')
         return
     try:
-        link = await direct_link_generator(link)
+        link = await direct_link_generator(link, proxy)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         if "ERROR:" in str(e):
@@ -128,7 +140,12 @@ async def func(client : Client, message: Message):
         config={
             'dir' : download_dir
         }
-    )    
+    )
+    if 'dood.video' in link:
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'    
     aria2_api = STATUS.ARIA2_API
     await aria2_api.start()        
     LOGGER.debug(f'Leeching : {link}')
@@ -147,13 +164,13 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 #'all-proxy': proxy,
-                 #'referer': referer,
+                 'all-proxy': proxy,
+                 'referer': referer,
                  'check-certificate': False,
-                 #'http-no-cache': _cache,
+                 'http-no-cache': _cache,
                  'follow-torrent': False,
                  #'timeout': timeout,
-                 #'connect-timeout': timeout,
+                 'connect-timeout': timeout,
                  'out': name}))
              
 
