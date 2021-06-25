@@ -124,14 +124,14 @@ async def func(client : Client, message: Message):
     if not is_url(link) and not is_magnet(link):
         await message.reply_text('No download source provided')
         return
-    if 'dood.to' in link \
-        or 'dood.la' in link \
-        or 'dood.cx' in link \
-        or 'dood.so' in link:
-        proxies = 'http://{0}'.format(proxy)
-        timeout = 300
-        _cache = True
-        referer = '*'
+    #if 'dood.to' in link \
+    #    or 'dood.la' in link \
+    #    or 'dood.cx' in link \
+    #    or 'dood.so' in link:
+    #    proxies = 'http://{0}'.format(proxy)
+    #    timeout = 300
+    #    _cache = True
+    #    referer = '*'
         
     try:
         link = await direct_link_generator(link, proxy)
