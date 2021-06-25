@@ -95,13 +95,13 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
-    if 'dood.video' in link \
-    or 'dood.to' in link or 'dood.cx' in link \
-    or 'dood.la' in link or 'dood.so' in link:
-        proxies = 'http://{0}'.format(proxy)
-        timeout = 300
-        _cache = True
-        referer = '*'
+    #if 'dood.video' in link \
+    #or 'dood.to' in link or 'dood.cx' in link \
+    #or 'dood.la' in link or 'dood.so' in link:
+    #    proxies = 'http://{0}'.format(proxy)
+    #    timeout = 300
+    #    _cache = True
+    #    referer = '*'
     LOGGER.info(link)
     link = link.strip()
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
