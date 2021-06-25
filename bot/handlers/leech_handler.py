@@ -80,7 +80,7 @@ async def func(client : Client, message: Message):
         proxy = proxy.strip()
           
     except IndexError:
-        proxy = ''   
+        proxy = None   
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
@@ -99,9 +99,8 @@ async def func(client : Client, message: Message):
     _cache = False
     referer = None
     LOGGER.info(link)
-    LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
-    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
+    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
     reply_to = message.reply_to_message
     if reply_to is not None:
         file = None
@@ -121,15 +120,25 @@ async def func(client : Client, message: Message):
                     link = await reply_to.download()
     else:
         tag = None
+        
     if not is_url(link) and not is_magnet(link):
         await message.reply_text('No download source provided')
         return
     
     try:
-        link = await direct_link_generator(link, proxy)
-        LOGGER.info(link)
+        link = direct_link_generator(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
+        if "ERROR:" in str(e):
+            await reply.edit_text(
+                str(e)
+            )       
+            return
+        if "Youtube" in str(e):
+            await reply.edit_text(
+                'ERROR:' str(e)
+            )    
+            return
     
     #await asyncio_sleep(1)   
     #if 'dood.video' in link:
