@@ -77,7 +77,7 @@ async def func(client : Client, message: Message):
         proxy = proxy.strip()
           
     except IndexError:
-        proxy = '192.168.0.1'
+        proxy = ''
 
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
@@ -99,6 +99,14 @@ async def func(client : Client, message: Message):
     #    timeout = 300
     #    _cache = True
     #    referer = '*'
+    download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
+    STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
+        config={
+            'dir' : download_dir
+        }
+    )
+  
+    aria2_api = STATUS.ARIA2_API    
     LOGGER.info(link)
     link = link.strip()
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
@@ -140,14 +148,7 @@ async def func(client : Client, message: Message):
             )    
             return
         
-    download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
-    STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
-        config={
-            'dir' : download_dir
-        }
-    )
-  
-    aria2_api = STATUS.ARIA2_API
+
     await aria2_api.start()        
     LOGGER.debug(f'Leeching : {link}')
     LOGGER.info(f'Leeching : {link}')
