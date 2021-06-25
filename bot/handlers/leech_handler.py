@@ -80,7 +80,7 @@ async def func(client : Client, message: Message):
         proxy = proxy.strip()
           
     except IndexError:
-        proxy = 192.168.0.1
+        proxy = '192.168.0.1'
 
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
