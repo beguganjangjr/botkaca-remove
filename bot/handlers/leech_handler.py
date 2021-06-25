@@ -58,6 +58,9 @@ async def func(client : Client, message: Message):
     message_args = mesg[0].split(' ')
     name_args = mesg[0].split('|')
     proxy_args = mesg[0].split(',')
+    proxies = None
+    timeout = 60
+    referer = None
     try:
         link = message_args[1]
         print(link)
@@ -77,7 +80,7 @@ async def func(client : Client, message: Message):
         proxy = proxy.strip()
           
     except IndexError:
-        proxy = None
+        proxy = 192.168.0.1
 
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
@@ -99,11 +102,6 @@ async def func(client : Client, message: Message):
         timeout = 300
         _cache = True
         referer = '*'
-    else:
-        timeout = 60
-        _cache = False
-        referer = None
-        proxies = None
     LOGGER.info(link)
     link = link.strip()
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
