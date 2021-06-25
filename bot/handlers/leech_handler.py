@@ -121,6 +121,13 @@ async def func(client : Client, message: Message):
     if not is_url(link) and not is_magnet(link):
         await reply.edit_text('No download source provided')
         return
+    if 'dood.video' in link \
+    or 'dood.to' in link or 'dood.cx' in link \
+    or 'dood.la' in link or 'dood.so' in link:
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'      
     try:
         link = await direct_link_generator(link, proxy)
     except DirectDownloadLinkException as e:
@@ -141,11 +148,7 @@ async def func(client : Client, message: Message):
             'dir' : download_dir
         }
     )
-    if 'dood.video' in link:
-        proxies = 'http://{0}'.format(proxy)
-        timeout = 300
-        _cache = True
-        referer = '*'    
+  
     aria2_api = STATUS.ARIA2_API
     await aria2_api.start()        
     LOGGER.debug(f'Leeching : {link}')
