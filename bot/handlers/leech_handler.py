@@ -76,9 +76,7 @@ async def func(client : Client, message: Message):
     except IndexError:
         name = ''
     try:
-        proxy = proxy_args[1]
-        proxy = proxy.strip()
-          
+        proxy = proxy_args[1]          
     except IndexError:
         proxy = ''   
     try:
@@ -94,11 +92,6 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
-
-    timeout = 60
-    _cache = False
-    referer = None
-    proxies = None
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -106,7 +99,12 @@ async def func(client : Client, message: Message):
         proxies = 'http://{0}'.format(proxy)
         timeout = 300
         _cache = True
-        referer = '*'    
+        referer = '*'
+    else:
+        timeout = 60
+        _cache = False
+        referer = None
+        proxies = None
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
