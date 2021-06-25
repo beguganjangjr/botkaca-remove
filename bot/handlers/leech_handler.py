@@ -54,118 +54,26 @@ def is_torrent(file_name: str):
 
 @Client.on_message(filters.command(COMMAND.LEECH))
 async def func(client : Client, message: Message):
-    mesg = message.text.split('\n')
-    message_args = mesg[0].split(' ')
-    name_args = mesg[0].split('|')
-    proxy_args = mesg[0].split(',')
-    try:
-        link = message_args[1]
-        print(link)
-        if link.startswith("|") or link.startswith("pswd: "):
-            link = ''
-    except IndexError:
-        link = ''
-    try:
-        name = name_args[1]
-        name = name.strip()
-        if name.startswith("pswd: "):
-            name = ''
-        elif ',' in name:
-            name = name.split(',')
-            name = name[0].strip()
-    except IndexError:
-        name = ''
-    try:
-        proxy = proxy_args[1]
-        proxy = proxy.strip()
-          
-    except IndexError:
-        proxy = None   
-    try:
-        ussr = urllib.parse.quote(mesg[1], safe='')
-        pssw = urllib.parse.quote(mesg[2], safe='')
-    except:
-        ussr = ''
-        pssw = ''
-    if ussr != '' and pssw != '':
-        link = link.split("://", maxsplit=1)
-        link = f'{link[0]}://{ussr}:{pssw}@{link[1]}'
-    pswd = re.search('(?<=pswd: )(.*)', message.text)
-    if pswd is not None:
-      pswd = pswd.groups()
-      pswd = " ".join(pswd)
-        
+    args = message.text.split(" ")
+    if len(args) <= 1:        
+        try:
+            await message.delete()
+        except:
+            pass
+        return
+    name = None    
+    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
     STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
         config={
             'dir' : download_dir
-            
         }
     )
     aria2_api = STATUS.ARIA2_API
-    timeout = 60
-    _cache = False
-    referer = None
-    LOGGER.info(link)
-    link = link.strip()
-    reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
-    reply_to = message.reply_to_message
-
-    
-    if reply_to is not None:
-        file = None
-        tag = reply_to.from_user.username
-        media_array = [reply_to.document, reply_to.video, reply_to.audio]
-        for i in media_array:
-            if i is not None:
-                file = i
-                break
-
-        if not is_url(link) and not is_magnet(link) or len(link) == 0:
-            if file is not None:
-                if file.mime_type != "application/x-bittorrent":
-                    await message.reply_text('No download source provided / No torrent file detected')
-                    return
-                else:
-                    link = await reply_to.download()
-    else:
-        tag = None
-        
-    if not is_url(link) and not is_magnet(link):
-        await message.reply_text('No download source provided')
-        return
-    
-    try:
-        link = await direct_link_generator(link)
-    except DirectDownloadLinkException as e:
-        LOGGER.info(f'{link}: {e}')
-        if "ERROR:" in str(e):
-            await reply.edit_text(
-                str(e)
-            )       
-            return
-        if "Youtube" in str(e):
-            await reply.edit_text(
-                str(e)
-            )    
-            return
-    
-    #await asyncio_sleep(1)   
-    #if 'dood.video' in link:
-    #    proxy = 'http://{0}'.format(proxy)
-    #    timeout = 300
-    #    _cache = True
-    #    referer = '*'
-    #elif CONFIG.PROXY is not None:
-        #proxy = 'http://{0}'.format(CONFIG.PROXY)   
-    
-
-    await asyncio_sleep(1)
     await aria2_api.start()
-    LOGGER.debug(f'Leeching : {link}')    
-    #proxy = 'http://{0}'.format(proxy)
-    #timeout = 300
-    
+
+    link = " ".join(args[1:])
+    LOGGER.debug(f'Leeching : {link}')
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
@@ -181,12 +89,12 @@ async def func(client : Client, message: Message):
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
                  #'all-proxy': proxy,
-                 'referer': referer,
+                 #'referer': referer,
                  'check-certificate': False,
-                 'http-no-cache': _cache,
+                 #'http-no-cache': _cache,
                  'follow-torrent': False,
                  #'timeout': timeout,
-                 'connect-timeout': timeout,
+                 #'connect-timeout': timeout,
                  'out': name}))
              
 
