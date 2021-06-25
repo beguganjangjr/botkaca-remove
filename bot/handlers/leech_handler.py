@@ -103,6 +103,9 @@ async def func(client : Client, message: Message):
     #    _cache = False
     #    referer = None
     #    proxies = None
+    timeout = 60
+    referer = None
+    proxies = None
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
@@ -129,6 +132,9 @@ async def func(client : Client, message: Message):
     
     try:
         link = await direct_link_generator(link)
+        if 'dood' in link:
+            proxies = 'http://{0}'.format(proxy)
+            referer = '*'
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         if "ERROR:" in str(e):
@@ -136,8 +142,7 @@ async def func(client : Client, message: Message):
                 str(e)
             )
             return
-    except:
-        return
+
     
     #await asyncio_sleep(1)   
 
@@ -172,13 +177,13 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 #'all-proxy': proxies,
-                 #'referer': referer,
+                 'all-proxy': proxies,
+                 'referer': referer,
                  'check-certificate': False,
                  #'http-no-cache': _cache,
                  'follow-torrent': False,
                  #'timeout': timeout,
-                 #'connect-timeout': timeout,
+                 'connect-timeout': timeout,
                  'out': name}))
              
 
