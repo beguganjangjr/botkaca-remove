@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 torlog = logging.getLogger(__name__)
 
-async def direct_link_generator(url):
+async def direct_link_generator(url, proxy):
     #blocklinks
     if 'mega.nz' in url or 'drive.google.com' in url or 'uptobox.com' in url \
     or '1fiecher.com' in url or 'googleusercontent.com' in url:
