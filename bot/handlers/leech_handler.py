@@ -136,7 +136,7 @@ async def func(client : Client, message: Message):
             return
         if "Youtube" in str(e):
             await reply.edit_text(
-                'ERROR:' str(e)
+                str(e)
             )    
             return
     
