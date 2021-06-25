@@ -85,7 +85,6 @@ async def func(client : Client, message: Message):
             return    
     aria2_api = STATUS.ARIA2_API
     await aria2_api.start()
-    name = None
     link = " ".join(args[1:])
     LOGGER.debug(f'Leeching : {link}')
     try:
