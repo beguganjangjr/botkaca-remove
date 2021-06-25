@@ -130,6 +130,7 @@ async def func(client : Client, message: Message):
         LOGGER.info(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
+        continue
     
     #await asyncio_sleep(1)   
     if 'dood.video' in link:
