@@ -132,11 +132,11 @@ async def func(client : Client, message: Message):
         LOGGER.info(f'{link}: {e}')
     
     #await asyncio_sleep(1)   
-    if 'dood.video' in link:
-        proxy = 'http://{0}'.format(proxy)
-        timeout = 300
-        _cache = True
-        referer = '*'
+    #if 'dood.video' in link:
+    #    proxy = 'http://{0}'.format(proxy)
+    #    timeout = 300
+    #    _cache = True
+    #    referer = '*'
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
