@@ -318,11 +318,13 @@ async def direct_link_generator(url):
         media_id = web_url[1]
         host = web_url[0]
         link = 'https://' + host + '/e/' + media_id
+        LOGGER.info(link)
         user_agent = ua.Random()
         headers = {'User-Agent': user_agent,
                    'Referer': 'https://{0}/'.format(host)}
-        link.replace('/d/','/e/')
+        #link.replace('/d/','/e/')
         proxies = 'http://{0}'.format(proxy)
+        LOGGER.info(proxies)
         session_timeout = aiohttp.ClientTimeout(total=None)
         try:
             async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
@@ -332,7 +334,7 @@ async def direct_link_generator(url):
                     else:
                         text = await response.text()
         except aiohttp.client_exceptions.ClientConnectorError as e:               
-            LOGGER.error(f'Cannot connect to mixdrop: {e}')
+            LOGGER.error(f'Cannot connect to doodstream: {e}')
             return "**ERROR**"
         
         except aiohttp.ContentTypeError:
