@@ -92,10 +92,18 @@ async def func(client : Client, message: Message):
     if pswd is not None:
       pswd = pswd.groups()
       pswd = " ".join(pswd)
-    timeout = 60
-    _cache = False
-    referer = None
-    proxies = None
+    if 'dood.video' in link \
+    or 'dood.to' in link or 'dood.cx' in link \
+    or 'dood.la' in link or 'dood.so' in link:
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'
+    else:
+        timeout = 60
+        _cache = False
+        referer = None
+        proxies = None
     LOGGER.info(link)
     link = link.strip()
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)    
@@ -121,13 +129,7 @@ async def func(client : Client, message: Message):
     if not is_url(link) and not is_magnet(link):
         await reply.edit_text('No download source provided')
         return
-    if 'dood.video' in link \
-    or 'dood.to' in link or 'dood.cx' in link \
-    or 'dood.la' in link or 'dood.so' in link:
-        proxies = 'http://{0}'.format(proxy)
-        timeout = 300
-        _cache = True
-        referer = '*'      
+ 
     try:
         link = await direct_link_generator(link, proxy)
     except DirectDownloadLinkException as e:
