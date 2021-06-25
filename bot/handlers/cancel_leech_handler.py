@@ -58,6 +58,6 @@ async def func(client : Client, data : Union[Message, CallbackQuery]):
             except:
                 pass
                 
-@Client.on_callback_query(filters.create(lambda _, query: query.data.startswith(COMMAND.CANCEL_LEECH)))
+@Client.on_callback_query(filters.create(lambda _, __, query: query.data.startswith(COMMAND.CANCEL_LEECH)))
 async def func2(*args, **kwargs):
     return await func(*args, **kwargs)
