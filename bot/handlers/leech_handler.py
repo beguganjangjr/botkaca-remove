@@ -69,9 +69,23 @@ async def func(client : Client, message: Message):
             'dir' : download_dir
         }
     )
+    try:
+        link = await direct_link_generator(link)
+    except DirectDownloadLinkException as e:
+        LOGGER.info(f'{link}: {e}')
+        if "ERROR:" in str(e):
+            await reply.edit_text(
+                str(e)
+            )       
+            return
+        if "Youtube" in str(e):
+            await reply.edit_text(
+                str(e)
+            )    
+            return    
     aria2_api = STATUS.ARIA2_API
     await aria2_api.start()
-
+    name = None
     link = " ".join(args[1:])
     LOGGER.debug(f'Leeching : {link}')
     try:
