@@ -94,7 +94,7 @@ async def direct_link_generator(url, proxy):
             return "**ERROR:** Cant't download, double check your anonfiles link!"
 
         
-     elif 'letsupload.io' in url:    
+     elif 'letsupload.io' in url:
         dl_url = ''
         try:
             link = re.findall(r'\bhttps?://.*letsupload\.io\S+', url)[0]
