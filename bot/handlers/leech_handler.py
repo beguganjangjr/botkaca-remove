@@ -95,6 +95,7 @@ async def func(client : Client, message: Message):
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
+    proxy = proxy.strip()
     #if 'dood' in link:
     #    proxies = 'http://{0}'.format(proxy)
     #    timeout = 300
