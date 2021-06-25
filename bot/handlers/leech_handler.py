@@ -102,6 +102,11 @@ async def func(client : Client, message: Message):
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
+    if 'dood' in link:
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'    
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
@@ -137,11 +142,7 @@ async def func(client : Client, message: Message):
             return
     
     #await asyncio_sleep(1)   
-    if 'dood.video' in link:
-        proxies = 'http://{0}'.format(proxy)
-        timeout = 300
-        _cache = True
-        referer = '*'
+
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
