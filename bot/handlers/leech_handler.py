@@ -127,7 +127,7 @@ async def func(client : Client, message: Message):
         return
     
     try:
-        link = direct_link_generator(link)
+        link = await direct_link_generator(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         if "ERROR:" in str(e):
