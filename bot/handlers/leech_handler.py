@@ -95,9 +95,10 @@ async def func(client : Client, message: Message):
       pswd = pswd.groups()
       pswd = " ".join(pswd)
 
-    #timeout = 60
-    #_cache = False
-    #referer = None
+    timeout = 60
+    _cache = False
+    referer = None
+    proxies = None
     LOGGER.info(link)
     LOGGER.info(f'proxy: {proxy}')
     link = link.strip()
@@ -115,18 +116,18 @@ async def func(client : Client, message: Message):
         if not is_url(link) and not is_magnet(link) or len(link) == 0:
             if file is not None:
                 if file.mime_type != "application/x-bittorrent":
-                    await message.edit_text('No download source provided / No torrent file detected')
+                    await reply.edit_text('No download source provided / No torrent file detected')
                     return
                 else:
                     link = await reply_to.download()
     else:
         tag = None
     if not is_url(link) and not is_magnet(link):
-        await message.edit_text('No download source provided')
+        await reply.edit_text('No download source provided')
         return
     
     try:
-        link = await direct_link_generator(link)
+        link = direct_link_generator(link)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         if "ERROR:" in str(e):
@@ -134,13 +135,13 @@ async def func(client : Client, message: Message):
                 str(e)
             )
             return
-            
+    
     #await asyncio_sleep(1)   
-    #if 'dood.video' in link:
-    #    proxy = 'http://{0}'.format(proxy)
-    #    timeout = 300
-    #    _cache = True
-    #    referer = '*'
+    if 'dood.video' in link:
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
+        _cache = True
+        referer = '*'
     #elif CONFIG.PROXY is not None:
         #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
@@ -172,13 +173,13 @@ async def func(client : Client, message: Message):
         else:
              download = await loop.run_in_executor(None, partial(aria2_api.add_uris, [link], options={
                  'continue_downloads' : True,
-                 #'all-proxy': proxy,
-                 #'referer': referer,
+                 'all-proxy': proxies,
+                 'referer': referer,
                  'check-certificate': False,
-                 #'http-no-cache': _cache,
+                 'http-no-cache': _cache,
                  'follow-torrent': False,
                  #'timeout': timeout,
-                 #'connect-timeout': timeout,
+                 'connect-timeout': timeout,
                  'out': name}))
              
 
