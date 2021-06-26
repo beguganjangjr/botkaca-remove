@@ -10,29 +10,37 @@ for original authorship. """
 
 import logging
 import json
-import math
+import random
+import time
 import re
+import string
 import urllib.parse
 from os import popen
 from random import choice
-from urllib.parse import urlparse
-
 import lk21
+import logging
 import requests
 from bs4 import BeautifulSoup
-from js2py import EvalJs
-from lk21.extractors.bypasser import Bypass
-from base64 import standard_b64encode
-#from bot.helper.telegram_helper.bot_commands import BotCommands
+from bot import CONFIG
 from bot.plugins.exceptions import DirectDownloadLinkException
-
+from bot.plugins import jsunpack
+from js2py import EvalJs
+from getuseragent import UserAgent
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+LOGGER = logging.getLogger(__name__)    
+ua = UserAgent()
 
 async def direct_link_generator(link: str):
     """ direct links generator """
     if not link:
         raise DirectDownloadLinkException("`No links found!`")
     elif 'youtube.com' in link or 'youtu.be' in link:
-        raise DirectDownloadLinkException("Unsupported yet YT-DL")
+        raise DirectDownloadLinkException("YT DL Unsupported Yet")
+    elif 'drive.google.com' in link:
+        raise DirectDownloadLinkException("No Support Mirrorring GDRIVE link")
     elif 'zippyshare.com' in link:
         return zippy_share(link)
     elif 'yadi.sk' in link:
@@ -72,7 +80,16 @@ async def direct_link_generator(link: str):
     elif '1drv.ms' in link:
         return onedrive(link)
     elif 'pixeldrain.com' in link:
-        return pixeldrain(link)
+        return pixeldrain(link)    
+    elif 'streamtape.com' in link:
+        return await streamtape(link)
+    elif 'mixdrop' in link:
+        return await mixdrop(link)
+    elif 'dood.la' in link \
+        or 'dood.so' in link \
+        or 'dood.cx' in link \
+        or 'dood.to' in link:
+            return await dood(link)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
@@ -169,7 +186,7 @@ def mediafire(url: str) -> str:
         link = re.findall(r'\bhttps?://.*mediafire\.com\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No MediaFire links found`\n")
-    page = BeautifulSoup(requests.get(link).content, 'lxml')
+    page = BeautifulSoup(requests.get(link).content, 'html.parser')
     info = page.find('a', {'aria-label': 'Download file'})
     dl_url = info.get('href')
     return dl_url
@@ -183,7 +200,7 @@ def osdn(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("`No OSDN links found`\n")
     page = BeautifulSoup(
-        requests.get(link, allow_redirects=True).content, 'lxml')
+        requests.get(link, allow_redirects=True).content, 'html.parser')
     info = page.find('a', {'class': 'mirror_link'})
     link = urllib.parse.unquote(osdn_link + info['href'])
     mirrors = page.find('form', {'id': 'mirror-select-form'}).findAll('tr')
@@ -297,16 +314,147 @@ def pixeldrain(url: str) -> str:
         return dl_link
     else:
         raise DirectDownloadLinkException("ERROR: Cant't download due {}.".format(resp.text["value"]))
+        
+        
+        
+        
+async def mixdrop(url: str) -> str:
+    dl_url = ''
+    try:
+        link = re.findall(r'\bhttps?://.*mixdrop\.(?:co|to|sx)/(?:f|e)\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No Mixdrop links found`\n")
+    web_url = re.findall(r'(?://|\.)(mixdrop\.(?:co|to|sx))/(?:f|e)/(\w+)', url)[0]
+    media_id = web_url[1]
+    host = web_url[0]
+    link = link.replace('/f/','/e/')
+    user_agent = ua.Random()
+    headers = {'Origin': 'https://{}'.format(host),
+               'Referer': 'https://{}/'.format(host),
+               'User-Agent': user_agent}
+    #proxies = 'http://{0}'.format(proxy)
+    session_timeout = aiohttp.ClientTimeout(total=None)
+    try:
+        #async with aiohttp.ClientSession() as ses:
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(url=link, headers=headers, timeout=None) as response:
+                if response.status != 200:
+                    LOGGER.error(f'Response status: {response.status}')
+                else:
+                    d_content = await response.text()
+                        
+    except aiohttp.client_exceptions.ClientConnectorError as e:
+        raise DirectDownloadLinkException(str(e))
+    except aiohttp.ContentTypeError:
+        raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+    r = re.search(r'location\s*=\s*"([^"]+)', d_content)
+    if r:
+        link = 'https://{0}{1}'.format(host, r.group(1))
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(url=link, headers=headers) as response:
+                if response.status != 200:
+                    LOGGER.error(f'Response status: {response.status}')
+                else:
+                    d_content = await response.text()
+                    
+    if '(p,a,c,k,e,d)' in d_content:
+        d_content = get_packed_data(d_content)
+            
+    r = re.search(r'(?:vsr|wurl|surl)[^=]*=\s*"([^"]+)', d_content)
+    if r:
+        headers = {'User-Agent': user_agent, 'Referer': link}
+        dl_url = "https:" + r.group(1) + append_headers(headers)
+            #dl_url = "https:" + r.group(1)
+        return dl_url
+    raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+      
+async def streamtape(url: str) -> str:
+    dl_url= ''       
+    try:
+        link = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No streamtape links found`\n")
+    web_url = re.findall(r'(?://|\.)(streamtape\.com)/(?:e|v)/([0-9a-zA-Z]+)', link)[0]    
+    media_id = web_url[1]
+    host = web_url[0]
+    user_agent = ua.Random()
+    #link = 'https://' + host + '/v/' + media_id
+    headers = {'User-Agent': user_agent,
+               'Referer': 'https://{0}/'.format(host)}
+    session_timeout = aiohttp.ClientTimeout(total=None)
+    async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+        async with ses.get(url=link, headers=headers, timeout=None) as response:
+            d_content = await response.text()
+    src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
+    if src:
+        src_url = 'https:{0}{1}&stream=1'.format(src.group(1), src.group(2))
+        dl_url = get_redirect_url(src_url, headers) + append_headers(headers)
+        return dl_url
+    raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+                
+async def streamtape(url: str) -> str:
+    web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
+    media_id = web_url[1]
+    host = web_url[0]
+    link = 'https://' + host + '/e/' + media_id
+    user_agent = ua.Random()
+    headers = {'User-Agent': user_agent,
+               'Referer': 'https://{0}/'.format(host)}
+        #link.replace('/d/','/e/')
+    proxies = 'http://{0}'.format(proxy)
+    session_timeout = aiohttp.ClientTimeout(total=None)
+    try:
+        async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+            async with ses.get(url=link, headers=headers, proxy=proxies, timeout=None) as response:
+                if response.status != 200:
+                    LOGGER.error(f'Response status: {response.status}')
+                else:
+                    text = await response.text()
+    except aiohttp.client_exceptions.ClientConnectorError as e:
+        LOGGER.error(f'Cannot connect to mixdrop: {e}')
+        raise DirectDownloadLinkException(str(e))
+     
+    except aiohttp.ContentTypeError:
+        LOGGER.error('decode failed')
+        raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+            
+           
+        #LOGGER.info(f'text: {text}')
+    match = re.search(r'''dsplayer\.hotkeys[^']+'([^']+).+?function\s*makePlay.+?return[^?]+([^"]+)''', text, re.DOTALL)
+    if match:
+        token = match.group(2)
+        url = 'https://{0}{1}'.format(host, match.group(1))
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(url=url, headers=headers, proxy=proxies) as response:
+                html = await response.text()
+                #response = await ses.get(url=url, headers=headers, proxy=proxies)
+                #html = await response.text()
+                dl_url = dood_decode(html) + token + str(int(time.time() * 1000)) + append_headers(headers)
+                #LOGGER.info(f'dl_url: {dl_url}')
+                return dl_url
+    raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+
+def get_redirect_url(url, headers={}):
+    request = urllib.request.Request(url, headers=headers)
+    request.get_method = lambda: 'HEAD'
+    response = urllib.request.urlopen(request)
+    return response.geturl()
 
 
-def useragent():
-    """
-    useragent random setter
-    """
-    useragents = BeautifulSoup(
-        requests.get(
-            'https://developers.whatismybrowser.com/'
-            'useragents/explore/operating_system_name/android/').content,
-        'lxml').findAll('td', {'class': 'useragent'})
-    user_agent = choice(useragents)
-    return user_agent.text
+def get_packed_data(html):
+    packed_data = ''
+    for match in re.finditer(r'(eval\s*\(function.*?)</script>', html, re.DOTALL | re.I):
+        if jsunpack.detect(match.group(1)):
+            packed_data += jsunpack.unpack(match.group(1))
+
+    return packed_data
+
+def dood_decode(data):
+    t = string.ascii_letters + string.digits
+    return data + ''.join([random.choice(t) for _ in range(10)])
+
+
+def append_headers(headers):
+    headers = '|%s' % '&'.join(['%s=%s' % (key, urllib.parse.quote_plus(headers[key])) for key in headers])
+    return headers
+
