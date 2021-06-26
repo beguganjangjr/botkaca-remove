@@ -103,7 +103,7 @@ def zippy_share(url: str) -> str:
     response_content = (requests.get(url)).content
     bs_obj = BeautifulSoup(response_content, 'html.parser')
 
-   try:
+    try:
         js_script = bs_obj.find("div", {"class": "center",}).find_all(
             "script"
         )[1]
