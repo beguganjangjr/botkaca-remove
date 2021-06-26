@@ -24,7 +24,7 @@ def main():
         remove('restart.pickle')
         
     app = Client(
-        "leechbot",
+        ":memory:",
         bot_token=CONFIG.BOT_TOKEN,
         api_id=CONFIG.API_ID,
         api_hash=CONFIG.API_HASH,
