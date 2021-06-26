@@ -84,7 +84,7 @@ async def direct_link_generator(link: str):
     elif 'pixeldrain.com' in link:
         return pixeldrain(link)    
     elif 'streamtape.com' in link:
-        return await streamtape(link)
+        return streamtape_(link)
     elif 'mixdrop' in link:
         return await mixdrop(link)
     elif 'dood.la' in link \
@@ -96,33 +96,33 @@ async def direct_link_generator(link: str):
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
 
-#def zippy_share(url: str) -> str:
-#    """ ZippyShare direct links generator
-#    Based on https://github.com/KenHV/Mirror-Bot """
-#    link = re.findall("https:/.(.*?).zippyshare", url)[0]
-#    response_content = (requests.get(url)).content
-#    bs_obj = BeautifulSoup(response_content, 'html.parser')
-
-#   try:
-#        js_script = bs_obj.find("div", {"class": "center",}).find_all(
-#            "script"
-#        )[1]
-#    except:
-#        js_script = bs_obj.find("div", {"class": "right",}).find_all(
-#            "script"
-#        )[0]
-#
-#    js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
-#    js_content = 'var x = "/' + js_content[0] + '"'
-
-#    evaljs = EvalJs()
-#    setattr(evaljs, "x", None)
-#    evaljs.execute(js_content)
-#    js_content = getattr(evaljs, "x")
-
-#    return f"https://{link}.zippyshare.com{js_content}"
-
 def zippy_share(url: str) -> str:
+    """ ZippyShare direct links generator
+    Based on https://github.com/KenHV/Mirror-Bot """
+    link = re.findall("https:/.(.*?).zippyshare", url)[0]
+    response_content = (requests.get(url)).content
+    bs_obj = BeautifulSoup(response_content, 'html.parser')
+
+   try:
+        js_script = bs_obj.find("div", {"class": "center",}).find_all(
+            "script"
+        )[1]
+    except:
+        js_script = bs_obj.find("div", {"class": "right",}).find_all(
+            "script"
+        )[0]
+
+    js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
+    js_content = 'var x = "/' + js_content[0] + '"'
+
+    evaljs = EvalJs()
+    setattr(evaljs, "x", None)
+    evaljs.execute(js_content)
+    js_content = getattr(evaljs, "x")
+
+    return f"https://{link}.zippyshare.com{js_content}"
+
+def zippy_share_(url: str) -> str:
     dl_url = ''
     try:
         link = re.findall("https:/.(.*?).zippyshare", url)[0]
@@ -305,6 +305,19 @@ def sbembed(link: str) -> str:
     for i in dl_url:
         lst_link.append(dl_url[i])
     return lst_link[count-1]
+
+
+def streamtape_(link: str) -> str:
+    """ Sbembed direct link generator
+    Based on https://github.com/breakdowns/slam-mirrorbot """
+    dl_url= '' 
+    try:
+        link = re.findall(r'\bhttps?://.*streamtape\.com\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No streamtape links found`\n")
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_streamtape(link)
+    return dl_url
 
 
 def onedrive(link: str) -> str:
