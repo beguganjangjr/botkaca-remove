@@ -8,6 +8,8 @@ from https://github.com/AvinashReddy3108/PaperplaneExtended . I hereby take no c
 than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtended/commits/master/userbot/modules/direct_links.py
 for original authorship. """
 
+import aiohttp
+import asyncio
 import logging
 import json
 import random
@@ -32,7 +34,7 @@ except ImportError:
     from urllib import urlencode
 LOGGER = logging.getLogger(__name__)    
 ua = UserAgent()
-
+loop = asyncio.get_event_loop()
 async def direct_link_generator(link: str):
     """ direct links generator """
     if not link:
