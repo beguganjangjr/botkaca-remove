@@ -307,7 +307,7 @@ def sbembed(link: str) -> str:
     return lst_link[count-1]
 
 
-def streamtape_(link: str) -> str:
+def streamtape_(url: str) -> str:
     """ Sbembed direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     dl_url= '' 
