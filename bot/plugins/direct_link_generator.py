@@ -96,33 +96,43 @@ async def direct_link_generator(link: str):
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
 
+#def zippy_share(url: str) -> str:
+#    """ ZippyShare direct links generator
+#    Based on https://github.com/KenHV/Mirror-Bot """
+#    link = re.findall("https:/.(.*?).zippyshare", url)[0]
+#    response_content = (requests.get(url)).content
+#    bs_obj = BeautifulSoup(response_content, 'html.parser')
+
+#   try:
+#        js_script = bs_obj.find("div", {"class": "center",}).find_all(
+#            "script"
+#        )[1]
+#    except:
+#        js_script = bs_obj.find("div", {"class": "right",}).find_all(
+#            "script"
+#        )[0]
+#
+#    js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
+#    js_content = 'var x = "/' + js_content[0] + '"'
+
+#    evaljs = EvalJs()
+#    setattr(evaljs, "x", None)
+#    evaljs.execute(js_content)
+#    js_content = getattr(evaljs, "x")
+
+#    return f"https://{link}.zippyshare.com{js_content}"
+
 def zippy_share(url: str) -> str:
-    """ ZippyShare direct links generator
-    Based on https://github.com/KenHV/Mirror-Bot """
-    link = re.findall("https:/.(.*?).zippyshare", url)[0]
-    response_content = (requests.get(url)).content
-    bs_obj = BeautifulSoup(response_content, "lxml")
-
+    dl_url = ''
     try:
-        js_script = bs_obj.find("div", {"class": "center",}).find_all(
-            "script"
-        )[1]
-    except:
-        js_script = bs_obj.find("div", {"class": "right",}).find_all(
-            "script"
-        )[0]
-
-    js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
-    js_content = 'var x = "/' + js_content[0] + '"'
-
-    evaljs = EvalJs()
-    setattr(evaljs, "x", None)
-    evaljs.execute(js_content)
-    js_content = getattr(evaljs, "x")
-
-    return f"https://{link}.zippyshare.com{js_content}"
-
-
+        link = re.findall("https:/.(.*?).zippyshare", url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No Hxfile links found`\n")
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_url(link)
+    return dl_url
+    
+    
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
     Based on https://github.com/wldhx/yadisk-direct """
@@ -188,10 +198,13 @@ def mediafire(url: str) -> str:
         link = re.findall(r'\bhttps?://.*mediafire\.com\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No MediaFire links found`\n")
-    page = BeautifulSoup(requests.get(link).content, 'html.parser')
-    info = page.find('a', {'aria-label': 'Download file'})
-    dl_url = info.get('href')
-    return dl_url
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_url(link)
+    return dl_url        
+#    page = BeautifulSoup(requests.get(link).content, 'html.parser')
+#    info = page.find('a', {'aria-label': 'Download file'})
+#    dl_url = info.get('href')
+#    return dl_url
 
 
 def osdn(url: str) -> str:
