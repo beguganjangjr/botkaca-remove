@@ -127,11 +127,15 @@ def zippy_share(url: str) -> str:
     try:
         link = re.findall("https:/.(.*?).zippyshare", url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("`No Hxfile links found`\n")
+        raise DirectDownloadLinkException("`No Zippyshare links found`\n")
+        
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_url(link)
-    return dl_url
-    
+    try:
+        dl_url=bypasser.bypass_url(link)
+    except:
+        dl_url = bypasser.bypass_fembed(link)
+#        raise DirectDownloadLinkException("`ERROR extracting Link`\n")
+    return dl_url        
     
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
