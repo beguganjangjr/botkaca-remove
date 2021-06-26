@@ -159,7 +159,8 @@ async def func(client : Client, message: Message):
     aria2_api = STATUS.ARIA2_API
     await asyncio_sleep(1)
     await aria2_api.start()
-    LOGGER.debug(f'Leeching : {link}')    
+    LOGGER.debug(f'Leeching : {link}')
+    LOGGER.info(f'Leeching : {link}') 
     #proxy = 'http://{0}'.format(proxy)
     #timeout = 300
     
