@@ -394,8 +394,10 @@ async def streamtape(url: str) -> str:
         return dl_url
     raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
                 
-async def streamtape(url: str) -> str:
+async def dood(url: str) -> str:
+    pattern = re.compile("\\d{1,3}(?:\\.\\d{1,3}){3}(?::\\d{1,5})?")
     web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
+    proxy = re.findall(pattern, url)[0]
     media_id = web_url[1]
     host = web_url[0]
     link = 'https://' + host + '/e/' + media_id
