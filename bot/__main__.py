@@ -20,13 +20,13 @@ async def main():
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-            await app.edit_message_text("Restarted successfully!", chat_id, msg_id)
+            
             os.remove(".restartmsg")
                         
     #asyncio.create_task(_autorestart_worker())   
     app.UPDATES_WORKERS = 100
     app.DOWNLOAD_WORKERS = 100
-    app.set_parse_mode("html")
+    #app.set_parse_mode("html")
     LOGGER.info("Bot Started!")
     signal.signal(signal.SIGINT, fs_utils.exit_clean_up)
     # register /start handler
@@ -56,6 +56,6 @@ async def main():
     await app.start()
     await idle()
     await app.stop()
-    
+    await app.edit_message_text("Restarted successfully!", chat_id, msg_id)
 if __name__ == "__main__":
     app.loop.run_until_complete(main())
