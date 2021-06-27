@@ -11,7 +11,7 @@ import pickle
 import traceback
 from os import execl, path, remove
 from . import app
-preserved_logs = []
+import os
 async def main():
     
     #async def _autorestart_worker():
