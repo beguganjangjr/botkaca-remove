@@ -82,7 +82,9 @@ async def direct_link_generator(link: str):
     elif '1drv.ms' in link:
         return onedrive(link)
     elif 'pixeldrain.com' in link:
-        return pixeldrain(link)    
+        return pixeldrain(link)
+    elif 'racaty' in link or 'hxfile' in link:
+        return filesim_(link)
     elif 'streamtape.com' in link:
         return streamtape_(link)
     elif 'mixdrop' in link:
@@ -96,6 +98,33 @@ async def direct_link_generator(link: str):
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
 
+        
+def filesim_(url: str) -> str:
+    """ Anonfiles direct links generator
+    based on https://github.com/breakdowns/slam-mirrorbot """
+    dl_url = ''
+    if 'racaty.net' in url:
+        try:
+            link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
+        except IndexError:
+            raise DirectDownloadLinkException("`No racaty links found`\n")
+    elif 'files.im' in url:
+        try:
+            link = re.findall(r'\bhttps?://.*files\.im\S+', url)[0]
+        except IndexError:
+            raise DirectDownloadLinkException("`No Filesim links found`\n")        
+    elif 'hxfile.co' in url:
+        try:
+            link = re.findall(r'\bhttps?://.*hxfile\.co\S+', url)[0]
+        except IndexError:
+            raise DirectDownloadLinkException("`No Hxfile links found`\n")     
+    bypasser = lk21.Bypass()
+    dl_url=bypasser.bypass_url(link)
+    return dl_url
+        
+        
+        
+        
 def zippy_share(url: str) -> str:
     """ ZippyShare direct links generator
     Based on https://github.com/KenHV/Mirror-Bot """
