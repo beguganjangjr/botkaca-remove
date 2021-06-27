@@ -51,7 +51,9 @@ async def main():
                 filters = lambda msg: not msg.chat.id in STATUS.CHAT_ID
             )
         )
-    app.run()
+    await app.start()
+    await idle()
+    await app.stop()
     
 if __name__ == "__main__":
-    main()
+    app.loop.run_until_complete(main())
