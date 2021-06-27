@@ -110,11 +110,9 @@ def filesim_(url: str) -> str:
         raise DirectDownloadLinkException("`No Hxfile / racaty / files.im links found`\n")
     bypasser = lk21.Bypass()
     LOGGER.info(link)
-    try:
-        dl_url = bypasser.bypass_filesIm(link)
-        return dl_url
-    except KeyError:
-        raise DirectDownloadLinkException("`Error: cant extract link`\n")
+    dl_url = bypasser.bypass_url(link)
+    return dl_url
+        
     
         
 def zippy_share(url: str) -> str:
