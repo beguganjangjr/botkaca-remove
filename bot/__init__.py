@@ -150,3 +150,4 @@ app = Client(
         parse_mode='html',
         sleep_threshold=30)
 session = aiohttp.ClientSession()
+preserved_logs = []
