@@ -28,7 +28,6 @@ async def main():
     app.DOWNLOAD_WORKERS = 100
     app.set_parse_mode("html")
     LOGGER.info("Bot Started!")
-    await app.send_message(1741587120, 'BOT STARTED')
     signal.signal(signal.SIGINT, fs_utils.exit_clean_up)
     # register /start handler
     app.add_handler(
