@@ -12,9 +12,9 @@ from pyrogram.types import Message
 workdir=os_path_join(CONFIG.ROOT, CONFIG.WORKDIR)
 
 
-def sendMessage(text: str, client: Client, message: Message):
+async def sendMessage(text: str, client: Client, message: Message):
     try:
-        return client.send_message(chat_id=message.chat.id,
+        return await client.send_message(chat_id=message.chat.id,
                             reply_to_message_id=message.message_id,
                             text=text)
     except Exception as e:
