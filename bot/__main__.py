@@ -1,5 +1,5 @@
 from os.path import join as os_path_join
-from pyrogram import Client, filters 
+from pyrogram import filters, idle
 from pyrogram.types import Message
 from pyrogram.handlers import MessageHandler, CallbackQueryHandler
 from bot import CONFIG, COMMAND, LOCAL, LOGGER, STATUS
@@ -11,7 +11,6 @@ import signal
 import pickle
 from os import execl, path, remove
 from . import app
-from pyrogram import idle
 
 async def main():
     fs_utils.start_cleanup()
