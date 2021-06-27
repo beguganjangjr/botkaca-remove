@@ -15,7 +15,7 @@ import os
 async def main():
     
     #async def _autorestart_worker():
-    await fs_utils.start_cleanup()
+    fs_utils.start_cleanup()
     # Check if the bot is restarting
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
