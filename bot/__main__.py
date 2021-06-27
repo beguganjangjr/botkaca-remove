@@ -11,30 +11,9 @@ import signal
 import pickle
 from os import execl, path, remove
 from . import app
+from pyrogram import idle
 
 async def main():
-    async def _autorestart_worker():
-        while True:
-            try:
-                await upload_worker()
-            except Exception as ex:
-                preserved_logs.append(ex)
-                logging.exception('upload worker commited suicide')
-                tb = traceback.format_exc()
-                for i in ADMIN_CHATS:
-                    try:
-                        await app.send_message(i, 'upload worker commited suicide')
-                        await app.send_message(i, tb, parse_mode=None)
-                    except Exception:
-                        logging.exception('failed %s', i)
-                        tb = traceback.format_exc()
-    asyncio.create_task(_autorestart_worker())
-    await app.start()
-    await idle()
-    await app.stop()
-
-app.loop.run_until_complete(main())
-def main():
     fs_utils.start_cleanup()
     # Check if the bot is restarting
     if path.exists('restart.pickle'):
@@ -45,15 +24,6 @@ def main():
         LOGGER.info('Restarted Successfully!')
         remove('restart.pickle')
         
-    app = Client(
-        ":memory:",
-        bot_token=CONFIG.BOT_TOKEN,
-        api_id=CONFIG.API_ID,
-        api_hash=CONFIG.API_HASH,
-        workers=32,
-        workdir=os_path_join(CONFIG.ROOT, CONFIG.WORKDIR),
-        plugins=dict(root="bot/handlers")
-    )
     app.UPDATES_WORKERS = 100
     app.DOWNLOAD_WORKERS = 100
     app.set_parse_mode("html")
