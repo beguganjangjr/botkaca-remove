@@ -105,21 +105,12 @@ def filesim_(url: str) -> str:
     dl_url = ''
     if 'racaty.net' in url:
         try:
-            link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
+            link = re.findall(r'\b(https?://.*(files|racaty|hxfile)*(|com|net|im)\S+)', url)[0][0]
         except IndexError:
-            raise DirectDownloadLinkException("`No racaty links found`\n")
-    elif 'files.im' in url:
-        try:
-            link = re.findall(r'\bhttps?://.*files\.im\S+', url)[0]
-        except IndexError:
-            raise DirectDownloadLinkException("`No Filesim links found`\n")        
-    elif 'hxfile.co' in url:
-        try:
-            link = re.findall(r'\bhttps?://.*hxfile\.co\S+', url)[0]
-        except IndexError:
-            raise DirectDownloadLinkException("`No Hxfile links found`\n")     
+            raise DirectDownloadLinkException("`No Hxfile / racaty / files.im links found`\n")
+    LOGGER.info(link)        
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_url(link)
+    dl_url=bypasser.bypass_filesIm((link)
     return dl_url
         
         
@@ -234,10 +225,7 @@ def mediafire(url: str) -> str:
     bypasser = lk21.Bypass()
     dl_url=bypasser.bypass_url(link)
     return dl_url        
-#    page = BeautifulSoup(requests.get(link).content, 'html.parser')
-#    info = page.find('a', {'aria-label': 'Download file'})
-#    dl_url = info.get('href')
-#    return dl_url
+
 
 
 def osdn(url: str) -> str:
@@ -443,7 +431,7 @@ async def streamtape(url: str) -> str:
     headers = {'User-Agent': user_agent,
                'Referer': 'https://{0}/'.format(host)}
     session_timeout = aiohttp.ClientTimeout(total=None)
-    async with aiohttp.ClientSession(trust_env=True, timeout=session_timeout) as ses:
+    async with aiohttp.ClientSession() as ses:
         async with ses.get(url=link, headers=headers, timeout=None) as response:
             d_content = await response.text()
     src = re.search(r'''ById\('vi.+?=\s*["']([^"']+)['"].+?["']([^"']+)''', d_content)
