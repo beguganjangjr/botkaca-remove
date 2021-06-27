@@ -1,4 +1,3 @@
-from os.path import join as os_path_join
 from pyrogram import filters, idle
 from pyrogram.types import Message
 from pyrogram.handlers import MessageHandler, CallbackQueryHandler
