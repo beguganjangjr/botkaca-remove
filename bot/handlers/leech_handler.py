@@ -91,18 +91,8 @@ async def func(client : Client, message: Message):
       pswd = pswd.groups()
       pswd = " ".join(pswd)
     LOGGER.info(link)
-    LOGGER.info(f'proxy: {proxy}')
+    
     link = link.strip()
-    #if 'dood' in link:
-    #    proxies = 'http://{0}'.format(proxy)
-    #    timeout = 300
-    #    _cache = True
-    #    referer = '*'
-    #else:
-    #    timeout = 60
-    #    _cache = False
-    #    referer = None
-    #    proxies = None
     timeout = 60
     referer = None
     proxies = None
@@ -161,9 +151,7 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')
     LOGGER.info(f'Leeching : {link}') 
-    #proxy = 'http://{0}'.format(proxy)
-    #timeout = 300
-    
+    LOGGER.info(f'proxy: {proxy}')
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
