@@ -20,7 +20,7 @@ async def main():
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-            await app.edit_text("Restarted successfully!", chat_id, msg_id)
+            await app.edit_message_text("Restarted successfully!", chat_id, msg_id)
             os.remove(".restartmsg")
                         
     #asyncio.create_task(_autorestart_worker())   
