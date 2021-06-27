@@ -6,6 +6,7 @@ from bot.config import Config
 from pyrogram import Client
 import aiohttp
 import requests
+from os.path import join as os_path_join
 
 def liststring(string):
     kopyasiz = list(string.split(","))
