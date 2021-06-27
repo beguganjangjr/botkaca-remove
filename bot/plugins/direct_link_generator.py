@@ -55,8 +55,8 @@ async def direct_link_generator(link: str):
         return osdn(link)
     elif 'github.com' in link:
         return github(link)
-    elif 'hxfile.co' in link:
-        return hxfile(link)
+    #elif 'hxfile.co' in link:
+    #    return hxfile(link)
     elif 'anonfiles.com' in link:
         return anon(link)
     elif 'letsupload.io' in link:
@@ -83,7 +83,7 @@ async def direct_link_generator(link: str):
         return onedrive(link)
     elif 'pixeldrain.com' in link:
         return pixeldrain(link)
-    elif 'racaty' in link or 'hxfile' in link:
+    elif 'racaty.net' in link or 'hxfile.co' in link or 'files.im' in link:
         return filesim_(link)
     elif 'streamtape.com' in link:
         return streamtape_(link)
