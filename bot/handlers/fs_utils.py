@@ -8,7 +8,7 @@ from bot import STATUS, CONFIG
 from bot.plugins import aria2
 from pyrogram import Client
 from pyrogram.types import Message
-from . import app
+from bot import app
 
 workdir=os_path_join(CONFIG.ROOT, CONFIG.WORKDIR)
 
