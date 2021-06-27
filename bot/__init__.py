@@ -138,4 +138,15 @@ STATUS = type('obj', (object,), {
     'DEFAULT_TRACKER' : CONFIG.TORRENT_TRACKER.split(','),
     'CHAT_ID' : CONFIG.CHAT_ID.split(',')
 })
+
+app = Client(
+        ':memory:',
+        bot_token=CONFIG.BOT_TOKEN,
+        api_id=CONFIG.API_ID,
+        api_hash=CONFIG.API_HASH,
+        workers=32,
+        workdir=os_path_join(CONFIG.ROOT, CONFIG.WORKDIR),
+        plugins=dict(root="bot/handlers"),
+        parse_mode='html',
+        sleep_threshold=30)
 session = aiohttp.ClientSession()
