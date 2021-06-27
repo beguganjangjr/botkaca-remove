@@ -54,8 +54,8 @@ async def main():
             )
         )
     await app.start()
+    await app.edit_message_text("Restarted successfully!", chat_id, msg_id)    
     await idle()
     await app.stop()
-    await app.edit_message_text("Restarted successfully!", chat_id, msg_id)
 if __name__ == "__main__":
     app.loop.run_until_complete(main())
