@@ -12,7 +12,7 @@ from bot.handlers.fs_utils import *
 
 @Client.on_message(filters.command(COMMAND.RESTART))
 async def restart(client : Client, message: Message):
-    restart_message = sendMessage("Restarting, Please wait!", client, message)
+    restart_message = await sendMessage("Restarting, Please wait!", client, message)
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
