@@ -27,7 +27,7 @@ async def main():
                         await app.send_message(i, tb, parse_mode=None)
                     except Exception:
                         logging.exception('failed %s', i)
-                         tb = traceback.format_exc()
+                        tb = traceback.format_exc()
                         
     asyncio.create_task(_autorestart_worker())   
     app.UPDATES_WORKERS = 100
