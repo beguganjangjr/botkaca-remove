@@ -86,7 +86,7 @@ async def direct_link_generator(link: str):
     elif 'racaty.net' in link or 'hxfile.co' in link or 'files.im' in link:
         return filesim_(link)
     elif 'streamtape.com' in link:
-        return streamtape(link)
+        return await streamtape(link)
     elif 'mixdrop' in link:
         return await mixdrop(link)
     elif 'dood.la' in link \
