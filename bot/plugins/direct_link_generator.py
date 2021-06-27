@@ -103,11 +103,10 @@ def filesim_(url: str) -> str:
     """ Anonfiles direct links generator
     based on https://github.com/breakdowns/slam-mirrorbot """
     dl_url = ''
-    if 'racaty.net' in url:
-        try:
-            link = re.findall(r'\b(https?://.*(files|racaty|hxfile)*(|com|net|im)\S+)', url)[0][0]
-        except IndexError:
-            raise DirectDownloadLinkException("`No Hxfile / racaty / files.im links found`\n")
+    try:
+        link = re.findall(r'\b(https?://.*(files|racaty|hxfile)*(|com|net|im)\S+)', url)[0][0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No Hxfile / racaty / files.im links found`\n")
     LOGGER.info(link)        
     bypasser = lk21.Bypass()
     dl_url=bypasser.bypass_filesIm((link)
