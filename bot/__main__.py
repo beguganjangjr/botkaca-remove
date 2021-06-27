@@ -15,12 +15,12 @@ import os
 async def main():
     
     #async def _autorestart_worker():
-    fs_utils.start_cleanup()
+    await fs_utils.start_cleanup()
     # Check if the bot is restarting
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-            app.edit_text("Restarted successfully!", chat_id, msg_id)
+            await app.edit_text("Restarted successfully!", chat_id, msg_id)
             os.remove(".restartmsg")
                         
     #asyncio.create_task(_autorestart_worker())   
