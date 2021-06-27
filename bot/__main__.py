@@ -14,20 +14,13 @@ from . import app
 preserved_logs = []
 async def main():
     async def _autorestart_worker():
-        while True:
-            try:
-                await app.send_message(1741587120, 'BOT STARTED')
-            except Exception as ex:
-                preserved_logs.append(ex)
-                logging.exception('upload worker commited suicide')
-                tb = traceback.format_exc()
-                for i in STATUS.CHAT_ID:
-                    try:
-                        await app.send_message(i, 'upload worker commited suicide')
-                        await app.send_message(i, tb, parse_mode=None)
-                    except Exception:
-                        logging.exception('failed %s', i)
-                        tb = traceback.format_exc()
+        fs_utils.start_cleanup()
+    # Check if the bot is restarting
+        if os.path.isfile(".restartmsg"):
+            with open(".restartmsg") as f:
+                chat_id, msg_id = map(int, f)
+                app.edit_text("Restarted successfully!", chat_id, msg_id)
+                os.remove(".restartmsg")
                         
     asyncio.create_task(_autorestart_worker())   
     app.UPDATES_WORKERS = 100
