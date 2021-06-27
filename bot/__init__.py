@@ -3,6 +3,7 @@
 
 import os
 from bot.config import Config
+from pyrogram import Client
 import aiohttp
 import requests
 
