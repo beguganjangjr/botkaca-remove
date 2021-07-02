@@ -12,7 +12,7 @@ from bot.handlers.fs_utils import *
 
 @Client.on_message(filters.command(COMMAND.RESTART))
 async def restart(client: Client, message: Message):
-    restart_message = sendMessage("Restarting, Please wait!", message, client)
+    restart_message = await sendMessage("Restarting, Please wait!", message, client)
     #restart_message = await message.reply_text("Restarting, Please wait!")
     #restart_message = await client.send_message(chat_id=message.chat_id,
     #                                            reply_to_message_id=message.message_id,
