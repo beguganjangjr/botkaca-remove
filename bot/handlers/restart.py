@@ -15,7 +15,7 @@ async def restart(client: Client, message: Message):
     #restart_message = sendMessage("Restarting, Please wait!", context.bot, update)
     restart_message = await message.reply_text("Restarting, Please wait!")
     # Save restart message object in order to reply to it after restarting
-    fs_utils.clean_all()
+    await fs_utils.clean_all()
     with open('restart.pickle', 'wb') as status:
         pickle.dump(restart_message, status)
     execl(executable, executable, "-m", "bot")
