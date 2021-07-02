@@ -1,4 +1,4 @@
-from pyrogram import filters, idle
+from pyrogram import filters, idle, Client
 from pyrogram.types import Message
 from pyrogram.handlers import MessageHandler, CallbackQueryHandler
 from bot import CONFIG, COMMAND, LOCAL, LOGGER, STATUS
@@ -17,12 +17,13 @@ async def main():
     #async def _autorestart_worker():
     fs_utils.start_cleanup()
     # Check if the bot is restarting
-    if path.exists('restart.pickle'):
-        with open('restart.pickle', 'rb') as status:
-            restart_message = pickle.load(status)
-        await restart_message.edit_text("Restarted Successfully!")
-        remove('restart.pickle')
-        
+    await app.start()
+    if os.path.isfile(".restartmsg"):
+        with open(".restartmsg") as f:
+            chat_id, msg_id = map(int, f)
+        await app.edit_text("Restarted successfully!", chat_id, msg_id)
+        os.remove(".restartmsg")   
+
                         
     #asyncio.create_task(_autorestart_worker())   
     app.UPDATES_WORKERS = 100
