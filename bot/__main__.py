@@ -20,7 +20,7 @@ async def main():
     if path.exists('restart.pickle'):
         with open('restart.pickle', 'rb') as status:
             restart_message = pickle.load(status)
-        restart_message.edit_text("Restarted Successfully!")
+        await restart_message.edit_text("Restarted Successfully!")
         remove('restart.pickle')
         
                         
