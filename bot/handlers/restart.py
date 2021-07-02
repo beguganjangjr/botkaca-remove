@@ -19,5 +19,5 @@ async def restart(client: Client, message: Message):
     with open(".restartmsg", "w") as f:
         f.truncate(0)
         f.write(f"{chat_id}\n{msg_id}\n")
-    fs_utils.clean_all()
+    await fs_utils.clean_all()
     os.execl(executable, executable, "-m", "bot")
