@@ -20,7 +20,6 @@ async def main():
     await app.start()
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
-            print(f)
             chat_id, msg_id = map(int, f)
         await app.edit_message_text(text="Restarted successfully!", chat_id=chat_id, message_id=msg_id)
         os.remove(".restartmsg")   
