@@ -125,12 +125,8 @@ async def func(client : Client, message: Message):
     try:
         link = await direct_link_generator(link)
         if 'dood' in link:
-            if CONFIG.PROXY is not None:
-                proxies = 'http://{0}'.format(CONFIG.PROXY)
-                referer = '*'
-            else:
-                referer = '*'
-                proxies = 'http://{0}'.format(proxy)
+            referer = '*'
+            proxies = 'http://{0}'.format(proxy)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         if "ERROR:" in str(e):
@@ -138,8 +134,9 @@ async def func(client : Client, message: Message):
                 str(e)
             )
             return
-
-    
+    if CONFIG.PROXY is not None:
+        proxies = 'http://{0}'.format(CONFIG.PROXY)
+        referer = '*'
     #await asyncio_sleep(1)   
 
     #elif CONFIG.PROXY is not None:
