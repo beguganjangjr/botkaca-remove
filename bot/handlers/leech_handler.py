@@ -96,6 +96,8 @@ async def func(client : Client, message: Message):
     timeout = 60
     referer = None
     proxies = None
+    if CONFIG.PROXY is not None:
+        proxies = 'http://{0}'.format(CONFIG.PROXY)
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
