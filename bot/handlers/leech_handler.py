@@ -96,8 +96,7 @@ async def func(client : Client, message: Message):
     timeout = 60
     referer = None
     proxies = None
-    if CONFIG.PROXY is not None:
-        proxies = 'http://{0}'.format(CONFIG.PROXY)
+
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
@@ -126,8 +125,12 @@ async def func(client : Client, message: Message):
     try:
         link = await direct_link_generator(link)
         if 'dood' in link:
-            proxies = 'http://{0}'.format(proxy)
-            referer = '*'
+            if CONFIG.PROXY is not None:
+                proxies = 'http://{0}'.format(CONFIG.PROXY)
+                referer = '*'
+            else:
+                referer = '*'
+                proxies = 'http://{0}'.format(proxy)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         if "ERROR:" in str(e):
