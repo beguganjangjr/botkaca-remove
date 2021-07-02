@@ -157,7 +157,7 @@ async def func(client : Client, message: Message):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')
     LOGGER.info(f'Leeching : {link}') 
-    LOGGER.info(f'proxy: {proxy}')
+    LOGGER.info(f'proxy & proxies: {proxies}{proxy}')
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
