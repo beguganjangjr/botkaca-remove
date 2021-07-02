@@ -12,16 +12,17 @@ import traceback
 from os import execl, path, remove
 from . import app
 import os
-async def main():
-    
+
+async def main():    
     #async def _autorestart_worker():
     fs_utils.start_cleanup()
     # Check if the bot is restarting
-    if os.path.isfile(".restartmsg"):
-        with open(".restartmsg") as f:
-            chat_id, msg_id = map(int, f)
-            await app.edit_message_text("Restarted successfully!", chat_id, msg_id)
-            os.remove(".restartmsg")
+    if path.exists('restart.pickle'):
+        with open('restart.pickle', 'rb') as status:
+            restart_message = pickle.load(status)
+        restart_message.edit_text("Restarted Successfully!")
+        remove('restart.pickle')
+        
                         
     #asyncio.create_task(_autorestart_worker())   
     app.UPDATES_WORKERS = 100
