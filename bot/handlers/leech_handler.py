@@ -114,6 +114,7 @@ async def func(client : Client, message: Message):
                     return
                 else:
                     link = await reply_to.download()
+                    LOGGER.info(link)
     else:
         tag = None
     if not is_url(link) and not is_magnet(link):
@@ -160,7 +161,7 @@ async def func(client : Client, message: Message):
             
         elif is_torrent(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_torrent, link, options={
-                'continue_downloads' : True,
+                'follow-torrent': True,
                 'bt_tracker' : STATUS.DEFAULT_TRACKER}))
             
         else:
