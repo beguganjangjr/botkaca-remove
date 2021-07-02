@@ -14,7 +14,7 @@ from bot.handlers.fs_utils import *
 async def restart(client: Client, message: Message):
     #restart_message = sendMessage("Restarting, Please wait!", context.bot, update)
     #restart_message = await message.reply_text("Restarting, Please wait!")
-    restart_message = await client.send_message(message.chat_id,
+    restart_message = await client.send_message(chat_id=message.chat_id,
                                                 reply_to_message_id=message.message_id,
                                                 text="Restarting, Please wait!",
                                                 parse_mode='HTMl')
