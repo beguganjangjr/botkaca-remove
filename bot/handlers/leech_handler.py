@@ -57,7 +57,7 @@ async def func(client : Client, message: Message):
     mesg = message.text.split('\n')
     message_args = mesg[0].split(' ')
     name_args = mesg[0].split('|')
-    proxy_args = mesg[0].split(',')
+    #proxy_args = mesg[0].split(',')
     try:
         link = message_args[1]
         print(link)
@@ -73,7 +73,7 @@ async def func(client : Client, message: Message):
     except IndexError:
         name = ''
     try:
-        proxy = proxy_args[1]
+        proxy = name_args[2]
         proxy = proxy.strip()
     except IndexError:
         proxy = ''
