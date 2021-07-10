@@ -99,14 +99,9 @@ async def func(client : Client, message: Message, isProxy=False):
     LOGGER.info(link)
     
     link = link.strip()
-    if isProxy is not None or 'dood' in link:
-        referer = '*'
-        proxies = 'http://{0}'.format(proxy)
-        timeout = 300
-    else:
-        timeout = 60
-        referer = None
-        proxies = None
+    timeout = 60
+    referer = None
+    proxies = None
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
@@ -141,11 +136,12 @@ async def func(client : Client, message: Message, isProxy=False):
                 str(e)
             )
             return
+        
+    if isProxy is not None or 'dood' in link:
+        referer = '*'
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
 
-    #await asyncio_sleep(1)   
-
-    #elif CONFIG.PROXY is not None:
-        #proxy = 'http://{0}'.format(CONFIG.PROXY)   
     
     download_dir = os_path_join(CONFIG.ROOT, CONFIG.ARIA2_DIR)
     STATUS.ARIA2_API = STATUS.ARIA2_API or aria2.aria2(
