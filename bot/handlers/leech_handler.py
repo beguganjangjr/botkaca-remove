@@ -137,7 +137,7 @@ async def func(client : Client, message: Message, isProxy=False):
             )
             return
         
-    if isProxy is not None or 'dood' in link:
+    if isProxy:
         referer = '*'
         proxies = 'http://{0}'.format(proxy)
         timeout = 300
