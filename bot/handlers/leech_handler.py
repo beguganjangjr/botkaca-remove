@@ -25,7 +25,7 @@ from bot.plugins import aria2, zipfile
 from bot.handlers import upload_to_tg_handler
 from bot.handlers import cancel_leech_handler
 from bot.plugins.exceptions import DirectDownloadLinkException
-from bot.plugins.direct_link_generator import direct_link_generator
+from bot.plugins.direct_link_generator import direct_link_generator, get_proxy
 from functools import partial
 #from bot.handlers.direct_link_generator import generate_directs
 
@@ -53,7 +53,13 @@ def is_torrent(file_name: str):
 
 
 @Client.on_message(filters.command(COMMAND.LEECH))
-async def func(client : Client, message: Message):
+async def leech_mirror(client : Client, message: Message):
+    func(client, message)
+@Client.on_message(filters.command(COMMAND.LEECH))
+async def leech_mirror(client : Client, message: Message, isProxy=True):
+    func(client, message)    
+
+async def func(client : Client, message: Message, isProxy=False):
     mesg = message.text.split('\n')
     message_args = mesg[0].split(' ')
     name_args = mesg[0].split('|')
@@ -73,10 +79,9 @@ async def func(client : Client, message: Message):
     except IndexError:
         name = ''
     try:
-        proxy = name_args[2]
-        proxy = proxy.strip()
+        proxy = get_proxy()
     except IndexError:
-        proxy = ''
+        proxy = ''        
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
