@@ -54,10 +54,10 @@ def is_torrent(file_name: str):
 
 @Client.on_message(filters.command(COMMAND.LEECH))
 async def leech_mirror(client : Client, message: Message):
-    func(client, message)
-@Client.on_message(filters.command(COMMAND.LEECH))
+    await func(client, message)
+@Client.on_message(filters.command(COMMAND.MIRROR))
 async def leech_mirror(client : Client, message: Message, isProxy=True):
-    func(client, message)    
+    await func(client, message)    
 
 async def func(client : Client, message: Message, isProxy=False):
     mesg = message.text.split('\n')
