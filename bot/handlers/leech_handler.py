@@ -53,11 +53,12 @@ def is_torrent(file_name: str):
 
 
 @Client.on_message(filters.command(COMMAND.LEECH))
-async def leech_mirror(client : Client, message: Message):
+async def leech_func(client : Client, message: Message):
     await func(client, message)
+    
 @Client.on_message(filters.command(COMMAND.MIRROR))
-async def leech_mirror(client : Client, message: Message, isProxy=True):
-    await func(client, message)    
+async def mirror_func(client : Client, message: Message):
+    await func(client, message, isProxy=True)    
 
 async def func(client : Client, message: Message, isProxy=False):
     mesg = message.text.split('\n')
@@ -98,10 +99,14 @@ async def func(client : Client, message: Message, isProxy=False):
     LOGGER.info(link)
     
     link = link.strip()
-    timeout = 60
-    referer = None
-    proxies = None
-
+    if isProxy is not None or 'dood' in link:
+        referer = '*'
+        proxies = 'http://{0}'.format(proxy)
+        timeout = 300
+    else:
+        timeout = 60
+        referer = None
+        proxies = None
     reply = await message.reply_text(LOCAL.ARIA2_CHECKING_LINK)
     reply_to = message.reply_to_message
     if reply_to is not None:
@@ -129,9 +134,6 @@ async def func(client : Client, message: Message, isProxy=False):
     
     try:
         link = await direct_link_generator(link)
-        if 'dood' in link:
-            referer = '*'
-            proxies = 'http://{0}'.format(proxy)
     except DirectDownloadLinkException as e:
         LOGGER.info(f'{link}: {e}')
         if "ERROR:" in str(e):
@@ -139,9 +141,7 @@ async def func(client : Client, message: Message, isProxy=False):
                 str(e)
             )
             return
-    if CONFIG.PROXY is not None:
-        proxies = 'http://{0}'.format(CONFIG.PROXY)
-        referer = '*'
+
     #await asyncio_sleep(1)   
 
     #elif CONFIG.PROXY is not None:
@@ -159,7 +159,7 @@ async def func(client : Client, message: Message, isProxy=False):
     await aria2_api.start()
     LOGGER.debug(f'Leeching : {link}')
     LOGGER.info(f'Leeching : {link}') 
-    LOGGER.info(f'proxy & proxies: {proxies}{proxy}')
+    LOGGER.info(f'proxy: {proxy} & proxies: {proxies}')
     try:
         if is_magnet(link):
             download = await loop.run_in_executor(None, partial(aria2_api.add_magnet, link, options={
