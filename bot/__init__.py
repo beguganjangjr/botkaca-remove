@@ -120,6 +120,7 @@ COMMAND = Config({
     'PASSWORD' : 'pass',
     'HELP' : 'help',
     'LEECH' : 'leech',
+    'MIRROR' : 'mirror',
     'RESTART' : 'restart',
     'CANCEL_LEECH' : 'cancel',
     'LEECH_LIST' : 'list',
