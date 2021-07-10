@@ -23,7 +23,7 @@ import lk21
 import logging
 import requests
 from bs4 import BeautifulSoup
-from bot import CONFIG, PROXY
+from bot import CONFIG
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
 from js2py import EvalJs
@@ -40,7 +40,7 @@ def get_proxy() -> str:
     '''
     Get proxy (str) from API.
     '''
-    proxy = requests.get(PROXY).text
+    proxy = requests.get(CONFIG.PROXY).text
     return proxy.rstrip()        
 
 async def direct_link_generator(link: str):
