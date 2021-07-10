@@ -23,7 +23,10 @@ async def func(filepath):
     try:
         duration = float(video_stream["duration"]) // 2
     except:
-        duration = 0
+        try:
+            duration = int(float(probe["format"]["duration"])) // 2
+        except:
+            duration = 0
 
     out_file = filepath + ".jpg"
     
