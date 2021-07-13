@@ -60,7 +60,7 @@ CONFIG = Config({
     'BAR_SIZE' : 10,
     'THUMBNAIL_NAME' : 'default_thumbnail.jpg',
     'LOCAL' : 'en',
-    'PROXY' : None
+    'PROXY_URL' : None
 })
 
 # GOAL:
@@ -154,3 +154,10 @@ app = Client(
         sleep_threshold=30)
 session = aiohttp.ClientSession()
 preserved_logs = []
+def get_proxy() -> str:
+    '''
+    Get proxy (str) from API.
+    '''
+    proxy = requests.get(CONFIG.PROXY_URL).text
+    return proxy.rstrip()
+PROXY = get_proxy()
