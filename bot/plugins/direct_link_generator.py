@@ -36,12 +36,7 @@ LOGGER = logging.getLogger(__name__)
 ua = UserAgent()
 loop = asyncio.get_event_loop()
 
-def get_proxy() -> str:
-    '''
-    Get proxy (str) from API.
-    '''
-    proxy = requests.get(CONFIG.PROXY).text
-    return proxy.rstrip()        
+
 
 async def direct_link_generator(link: str):
     """ direct links generator """
@@ -451,7 +446,7 @@ async def streamtape(url: str) -> str:
 async def dood(url: str) -> str:
     pattern = re.compile("\\d{1,3}(?:\\.\\d{1,3}){3}(?::\\d{1,5})?")
     web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
-    proxy = re.findall(pattern, url)[0]
+    proxy = CONFIG.PROXY
     media_id = web_url[1]
     host = web_url[0]
     link = 'https://' + host + '/e/' + media_id
