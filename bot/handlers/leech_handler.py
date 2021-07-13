@@ -80,7 +80,7 @@ async def func(client : Client, message: Message, isProxy=False):
     except IndexError:
         name = ''
     try:
-        proxy = get_proxy()
+        proxy = PROXY
     except IndexError:
         proxy = ''        
     try:
@@ -139,7 +139,7 @@ async def func(client : Client, message: Message, isProxy=False):
         
     if isProxy:
         referer = '*'
-        proxies = 'http://{0}'.format(PROXY)
+        proxies = 'http://{0}'.format(proxy)
         timeout = 300
 
     
