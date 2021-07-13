@@ -23,7 +23,7 @@ import lk21
 import logging
 import requests
 from bs4 import BeautifulSoup
-from bot import CONFIG
+from bot import CONFIG, PROXY
 from bot.plugins.exceptions import DirectDownloadLinkException
 from bot.plugins import jsunpack
 from js2py import EvalJs
@@ -446,7 +446,7 @@ async def streamtape(url: str) -> str:
 async def dood(url: str) -> str:
     pattern = re.compile("\\d{1,3}(?:\\.\\d{1,3}){3}(?::\\d{1,5})?")
     web_url = re.findall(r'(?://|\.)(dood(?:stream)?\.(?:com|watch|to|so|cx|la))/(?:d|e)/([0-9a-zA-Z]+)', url)[0]
-    proxy = CONFIG.PROXY
+    proxy = PROXY
     media_id = web_url[1]
     host = web_url[0]
     link = 'https://' + host + '/e/' + media_id
