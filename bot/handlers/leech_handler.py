@@ -20,12 +20,12 @@ from math import floor
 from pyrogram import Client, filters 
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aria2p.downloads import Download, File
-from bot import LOCAL, STATUS, CONFIG, COMMAND, session
+from bot import LOCAL, STATUS, CONFIG, COMMAND, session, PROXY
 from bot.plugins import aria2, zipfile
 from bot.handlers import upload_to_tg_handler
 from bot.handlers import cancel_leech_handler
 from bot.plugins.exceptions import DirectDownloadLinkException
-from bot.plugins.direct_link_generator import direct_link_generator, get_proxy
+from bot.plugins.direct_link_generator import direct_link_generator
 from functools import partial
 #from bot.handlers.direct_link_generator import generate_directs
 
@@ -139,7 +139,7 @@ async def func(client : Client, message: Message, isProxy=False):
         
     if isProxy:
         referer = '*'
-        proxies = 'http://{0}'.format(proxy)
+        proxies = 'http://{0}'.format(PROXY)
         timeout = 300
 
     
