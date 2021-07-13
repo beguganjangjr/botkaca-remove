@@ -8,6 +8,14 @@ import aiohttp
 import requests
 from os.path import join as os_path_join
 
+
+def get_proxy() -> str:
+    '''
+    Get proxy (str) from API.
+    '''
+    proxy = requests.get(CONFIG.PROXY_URL).text
+    return proxy.rstrip()
+
 def liststring(string):
     kopyasiz = list(string.split(","))
     kopyasiz = list(dict.fromkeys(kopyasiz))
@@ -154,10 +162,5 @@ app = Client(
         sleep_threshold=30)
 session = aiohttp.ClientSession()
 preserved_logs = []
-def get_proxy() -> str:
-    '''
-    Get proxy (str) from API.
-    '''
-    proxy = requests.get(CONFIG.PROXY_URL).text
-    return proxy.rstrip()
+
 PROXY = get_proxy()
